@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="NoticeMapper">
+	
+	<resultMap id="noticeSelectMap" type="notice">
+		<result property="noticeNo" 			column="notice_no" 			jdbcType="NUMERIC"/>
+		<result property="noticeTitle"			column="notice_title" 		jdbcType="VARCHAR" />
+		<result property="noticeContent" 		column="notice_content" 	jdbcType="VARCHAR" />
+		<result property="noticeImage1" 		column="notice_image1" 		jdbcType="VARCHAR" />
+		<result property="noticeImage2" 		column="notice_image2" 		jdbcType="VARCHAR" />
+		<result property="noticeRegDate" 		column="notice_regdate" 	jdbcType="DATE" />
+		<result property="noticeCount" 			column="notice_count" 		jdbcType="NUMERIC" />
+	
+	<association property="userId" javaType="user">
+		<result property="userId" column="user_id" jdbcType="VARCHAR"/>
+	    <result property="nickName" column="nickname" jdbcType="VARCHAR" />
+	</association>
+	</resultMap>
+	
+	<!-- SQL : INSERT -->
+	<insert 	id="addNotice"		parameterType="notice" >
+	 	INSERT
+		INTO NOTICE( NOTICE_NO  , NOTICE_TITLE , NOTICE_CONTENT , NOTICE_IMAGE1 , NOTICE_IMAGE2, NOTICE_REGDATE, NOTICE_COUNT, USER_ID)
+		VALUES	 (	seq_notice_notice_no.nextval , 
+					#{noticeTitle:VARCHAR}, 
+					#{noticeContent:VARCHAR}, 
+					#{noticeImage1:VARCHAR}, 
+					#{noticeImage2:VARCHAR},
+					SYSDATE, 
+					#{noticeCount},
+					#{userId.userId:VARCHAR} )
+
+	 </insert>
+	 
+	 <!-- SQL : SELECT ONE -->
+	 <select 	id="getNotice"	parameterType="int"	resultMap="noticeSelectMap">
+	SELECT
+	N.NOTICE_NO , N.NOTICE_TITLE , N.NOTICE_CONTENT , N.NOTICE_IMAGE1 , 
+	N.NOTICE_IMAGE2, N.NOTICE_REGDATE, N.NOTICE_COUNT, U.USER_ID, U.NICKNAME
+	FROM NOTICE N , USERS U
+	WHERE n.notice_no = #{notice_no} AND U.USER_ID = N.USER_ID AND U.USER_ID = 'admin01'
+
+	 </select>
+	 
+ 	<update id="getCount" parameterType="int">
+ 	UPDATE notice
+ 	<set>
+ 		notice_count = notice_count+1
+ 	</set>
+ 	WHERE notice_no = #{notice_no}
+ 	
+ 	</update>
+	 
+
+	 
+	 <!-- SQL : UPDATE -->
+	 <update	id="updateNotice"	parameterType="notice" >
+	   	UPDATE NOTICE
+	   	<set>
+	   		NOTICE_TITLE 	= #{noticeTitle:VARCHAR} ,
+			NOTICE_CONTENT	= #{noticeContent:VARCHAR},
+			NOTICE_REGDATE	= SYSDATE ,
+			NOTICE_IMAGE1	=  #{noticeImage1:VARCHAR},
+			NOTICE_IMAGE2   =  #{noticeImage2:VARCHAR}
+	   	</set>
+	   	WHERE notice_no = #{noticeNo}
+	 </update>
+	 
+	 <delete id="deleteNotice" parameterType="int">
+	 DELETE
+	 FROM notice
+	 WHERE notice_no = #{noticeNo}
+	 </delete>
+		 
+	<!-- SQL : SELECT LIST -->
+	<select  id="getNoticeList"  parameterType="map"	resultMap="noticeSelectMap">
+	  	SELECT *
+	  	FROM (	SELECT inner_table.* , ROWNUM AS row_seq
+	  					FROM		(	SELECT N.NOTICE_NO , N.NOTICE_TITLE , U.USER_ID, U.NICKNAME , N.NOTICE_REGDATE, N.NOTICE_COUNT, N.NOTICE_IMAGE1, N.NOTICE_IMAGE2
+											FROM NOTICE N , USERS U
+											WHERE N.USER_ID = 'admin01' AND U.USER_ID = N.USER_ID
+											<if test="search.searchCondition != null">
+													<if test="search.searchCondition == 0 and search.searchKeyword !='' ">
+										 			AND	LOWER(NOTICE_NO) LIKE LOWER('%${search.searchKeyword}%')
+													</if>
+													<if test="search.searchCondition == 1 and search.searchKeyword !='' ">
+										 			AND	LOWER(NOTICE_TITLE) LIKE LOWER('%${search.searchKeyword}%')
+													</if>
+											</if>
+											ORDER BY NOTICE_NO DESC) inner_table
+						WHERE ROWNUM &lt;= #{search.endRowNum} )
+		WHERE row_seq BETWEEN #{search.startRowNum} AND #{search.endRowNum} 
+	 </select>
+	 
+
+	<!-- SQL : SELECT ROW Count -->	 
+	 <select  id="getTotalCount"  parameterType="search"	 resultType="Integer">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT NOTICE_TITLE , NOTICE_CONTENT , NOTICE_REGDATE
+						FROM NOTICE
+						<if test="searchCondition != null">
+							<where>
+								<if test="searchCondition == 0 and searchKeyword !='' ">
+						 		AND	NOTICE_NO = #{searchKeyword}
+								</if>
+								<if test="searchCondition == 1 and searchKeyword !='' ">
+						 		NOTICE_TITLE LIKE '%${searchKeyword}%'
+								</if>
+							</where>
+						</if> ) countTable						
+	 </select>
+	 
+
+
+
+</mapper>
+
+

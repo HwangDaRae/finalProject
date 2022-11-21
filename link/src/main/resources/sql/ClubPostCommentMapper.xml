@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  						
+<mapper namespace="ClubPostCommentMapper">
+
+
+
+	<resultMap id="clubPostCommentSelectMap" type="com.link.service.domain.Comment">
+		<result property="clubPostCommentNo"		column="club_post_comment_no" 		jdbcType="NUMERIC"/>
+		<result property="clubPostNo"				column="club_post_no" 				jdbcType="NUMERIC"/>
+		<result property="commentContent" 			column="comment_content" 			jdbcType="VARCHAR"/>
+		<result property="commentRegDate" 			column="comment_reg_date" 			jdbcType="DATE"/>
+		<result property="commentUpdateDate" 		column="comment_update_date" 		jdbcType="DATE"/>
+		<result property="commentHeartCount" 		column="comment_heart_count" 		jdbcType="NUMERIC"/>
+		<result property="commentCount" 			column="comment_count" 				jdbcType="NUMERIC"/>
+		<result property="reportCondition" 			column="report_condition" 			jdbcType="VARCHAR"/>
+		<result property="deleteCondition" 			column="delete_condition" 			jdbcType="VARCHAR"/>
+		<result property="heartCondition"		 	column="HEART_CONDITION"		 	jdbcType="NUMERIC"/>
+		<result property="parent" 					column="parent" 					jdbcType="NUMERIC"/>
+		<result property="depth" 					column="depth" 						jdbcType="NUMERIC"/>
+		<result property="sequence" 				column="sequence" 					jdbcType="NUMERIC"/>
+		
+		<association property="user"				javaType="user">
+			<result property="userId" 				column="user_id"		 			jdbcType="VARCHAR" />
+			<result property="profileImage"			column="profile_image"				jdbcType="VARCHAR" />
+			<result property="nickName"				column="nickName"					jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	
+	
+	
+	<sql id="select-list">
+		SELECT C.CLUB_POST_COMMENT_NO, C.CLUB_POST_NO, C.USER_ID, U.NICKNAME, U.PROFILE_IMAGE, C.COMMENT_CONTENT, C.COMMENT_HEART_COUNT, C.COMMENT_COUNT, C.REPORT_CONDITION, C.DELETE_CONDITION,
+		TO_CHAR(C.COMMENT_REG_DATE, '""YYYY"년 "MM"월 "DD"일" ""HH24"시 "MI"분 "SS"초"') AS COMMENT_REG_DATE, TO_CHAR(C.COMMENT_UPDATE_DATE, '""YYYY"년 "MM"월 "DD"일" ""HH24"시 "MI"분 "SS"초"') AS COMMENT_UPDATE_DATE,
+		C.PARENT, C.DEPTH, C.SEQUENCE, HEART_CONDITION
+		FROM CLUB_POST_COMMENT C, USERS U, ( SELECT SOURCE_NO AS HEART_CONDITION
+												FROM HEART
+												WHERE TRIM(SOURCE) = '3' AND USER_ID = #{ comment.user.userId } ) V1
+		WHERE HEART_CONDITION (+) = C.CLUB_POST_COMMENT_NO AND C.USER_ID = U.USER_ID AND C.CLUB_POST_NO = #{ comment.clubPostNo } AND C.DELETE_CONDITION = 0
+		<choose>
+			<when test="comment.clubPostCommentNo != 0">AND C.PARENT = #{ comment.clubPostCommentNo }</when>
+		</choose>
+		ORDER BY C.CLUB_POST_COMMENT_NO ASC
+	</sql>
+
+
+	
+	<!-- 모임게시물 댓글 리스트 -->
+	<select id="getClubPostCommentList" parameterType="map" resultMap="clubPostCommentSelectMap">
+		<!-- SELECT V3.* -->
+		<!-- FROM ( SELECT ROW_NUMBER() OVER(ORDER BY CLUB_POST_NO DESC) AS R, V2.* -->
+				<!-- FROM ( -->
+						<include refid="select-list"></include>
+					 <!-- ) V2 -->
+			 <!-- ) V3 -->
+		<!-- WHERE R BETWEEN ((#{ search.currentPage }-1)*#{ search.pageSize }+1) AND #{ search.currentPage }*#{ search.pageSize } -->
+	</select>
+	
+	
+	
+	<!-- 댓글 등록 -->
+	<insert id="addClubPostComment" parameterType="comment">
+		INSERT INTO CLUB_POST_COMMENT (CLUB_POST_COMMENT_NO, CLUB_POST_NO, USER_ID, COMMENT_CONTENT, COMMENT_REG_DATE, COMMENT_UPDATE_DATE,
+		COMMENT_HEART_COUNT, COMMENT_COUNT, REPORT_CONDITION, DELETE_CONDITION, PARENT, DEPTH, SEQUENCE)
+		VALUES (seq_club_post_comment_no.NEXTVAL, #{ clubPostNo }, #{ user.userId }, #{ commentContent }, sysdate, null, 0, 0, '0', '0', #{ parent }, #{ depth }, #{ commentCount })
+	</insert>
+	
+	
+	
+	<!-- 가장 최신 모임게시물 댓글 번호 가져온다 -->
+	<select id="getClubPostCommentNo" parameterType="comment" resultType="int">
+		SELECT V1.CLUB_POST_COMMENT_NO
+		FROM ( SELECT *
+				FROM CLUB_POST_COMMENT C
+				WHERE USER_ID = #{ user.userId }
+				ORDER BY COMMENT_REG_DATE DESC ) V1
+		WHERE ROWNUM = 1
+	</select>
+	
+	
+	
+	<!-- 특정 댓글을 가져온다 -->	
+	<select id="getClubPostComment" parameterType="comment" resultMap="clubPostCommentSelectMap">
+		SELECT C.CLUB_POST_COMMENT_NO, C.CLUB_POST_NO, C.USER_ID, U.NICKNAME, U.PROFILE_IMAGE, C.COMMENT_CONTENT, C.COMMENT_REG_DATE, C.COMMENT_UPDATE_DATE, C.COMMENT_HEART_COUNT, C.COMMENT_COUNT,
+		C.REPORT_CONDITION, C.DELETE_CONDITION, C.PARENT, C.DEPTH, C.SEQUENCE, HEART_CONDITION
+		FROM CLUB_POST_COMMENT C, USERS U, ( SELECT SOURCE_NO AS HEART_CONDITION
+												FROM HEART
+												WHERE TRIM(SOURCE) = '3' AND USER_ID = #{ user.userId } ) V1
+		WHERE HEART_CONDITION (+) = C.CLUB_POST_COMMENT_NO AND C.USER_ID = U.USER_ID AND C.DELETE_CONDITION = 0 AND C.REPORT_CONDITION = 0
+		<choose>
+			<when test="deleteCondition == 10">AND C.CLUB_POST_COMMENT_NO = #{ parent }</when>
+			<otherwise>AND C.CLUB_POST_COMMENT_NO = #{ clubPostCommentNo }</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	<!-- 댓글내용 수정 -->
+	<update id="updateClubPostComment" parameterType="map">
+		UPDATE CLUB_POST_COMMENT
+		SET
+		<choose>
+			<when test="comment.heartCondition == 1">COMMENT_HEART_COUNT = COMMENT_HEART_COUNT + 1</when>
+			<when test="comment.heartCondition == -1">COMMENT_HEART_COUNT = COMMENT_HEART_COUNT - 1</when>
+			<when test="comment.deleteCondition == 1">COMMENT_COUNT = COMMENT_COUNT - 1</when>
+			<when test="comment.deleteCondition == -1">COMMENT_COUNT = COMMENT_COUNT + 1</when>
+			<when test="report.reportCondition == 1 and report.reportReason > 0">REPORT_CONDITION = 1</when>
+			<otherwise>COMMENT_CONTENT = #{ comment.commentContent }, COMMENT_UPDATE_DATE = SYSDATE</otherwise>
+		</choose>
+		<choose>
+			<when test="comment.deleteCondition == 1 or comment.deleteCondition == -1">WHERE CLUB_POST_COMMENT_NO = #{ comment.parent }</when>
+			<otherwise>WHERE CLUB_POST_COMMENT_NO = #{ comment.clubPostCommentNo }</otherwise>
+		</choose>
+	</update>
+	
+	
+	
+	<!-- 댓글 삭제 -->
+	<update id="deleteClubPostComment" parameterType="comment">
+		UPDATE CLUB_POST_COMMENT SET DELETE_CONDITION = '1', DELETE_USER_ID = #{ user.userId } WHERE <choose>
+																										<when test="deleteCondition == 20">PARENT = #{ clubPostCommentNo }</when>
+																										<otherwise>CLUB_POST_COMMENT_NO = #{ clubPostCommentNo }</otherwise>
+																									</choose>
+	</update>
+	
+	
+	
+	
+	 
+</mapper>

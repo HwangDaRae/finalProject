@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="LiveMapper">
+
+
+
+	<resultMap id="liveSelectMap" type="live">
+		<result property="roomName" column="roomid" jdbcType="VARCHAR" />
+		<result property="limit" column="limit" jdbcType="NUMERIC" />
+		<result property="member" column="member" jdbcType="NUMERIC" />
+		<result property="profileImage" column="profile_image"
+			jdbcType="NUMERIC" /> 
+		<result property="type" column="type" jdbcType="CHAR" />
+		<result property="clubNo" column="club_no" jdbcType="NUMERIC" />
+	</resultMap>  
+	<!-- <sql id="select-list"> SELECT roomid , limit , member FROM live <where> 
+		<if test="(searchCondition == 0 and searchKeyword != '')"> user_id LIKE(#{searchKeyword}||'%') 
+		</if> <if test="(searchCondition == 1 and searchKeyword != '')"> nickname 
+		LIKE(#{searchKeyword}||'%') </if> <if test='((searchCondition == null) and 
+		(searchKeyword == 1 or searchKeyword == 2))'> TRIM(penalty_type) = #{searchKeyword} 
+		</if> </where> ORDER BY user_id </sql> -->
+
+	<insert id="addLive" parameterType="live">
+		INSERT 
+		INTO live (
+		live_no ,roomid , limit , member, profile_image, type, club_no
+		)
+		VALUES 
+		(
+		seq_club_post_no.NEXTVAL, #{roomName:VARCHAR},
+		#{limit:NUMERIC}, #{member:NUMERIC}, #{profileImage:VARCHAR}, #{type:CHAR}, #{clubNo:NUMERIC}
+		)
+	</insert>
+  
+	<select id="getLive" parameterType="live"
+		resultMap="liveSelectMap">
+		SELECT
+		roomid , limit , member, profile_image, type, club_no
+		FROM live
+		<if test="clubNo != null">
+		WHERE roomid = #{roomName} AND type = #{type} AND club_no = #{clubNo}
+		</if>
+		<if test="clubNo == null">
+		WHERE roomid = #{roomName} AND type = #{type}
+		</if>
+	</select>
+
+	<select id="getLiveList" parameterType="live" 
+		resultMap="liveSelectMap">
+		SELECT
+		roomid , limit , member, profile_image, type, club_no 
+		FROM live
+		<if test="clubNo != null">
+		WHERE type = #{type} AND club_no = #{clubNo}
+		</if>
+		<if test="clubNo == null">
+		WHERE type = #{type}
+		</if>
+	</select>  
+
+	<delete id="deleteLive" parameterType="live">
+		DELETE live
+		WHERE roomid = #{roomName} and type = #{type}
+	</delete>
+
+	<update id="updateLive" parameterType="live">
+		UPDATE live
+		<set>
+			member = #{member:NUMERIC}
+		</set>
+		WHERE roomid = #{roomName} and type = #{type}
+	</update>
+ 
+	<!-- <select id="getUserList" parameterType="search" resultMap="userSelectMap"> 
+		SELECT * FROM ( SELECT inner_table.* , ROWNUM AS row_seq FROM ( <include 
+		refid="select-list"></include>) inner_table WHERE ROWNUM &lt;= #{endRowNum} 
+		) WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum} </select> <select 
+		id="getTotalCount" parameterType="search" resultType="int"> SELECT COUNT(*) 
+		FROM ( <include refid="select-list"></include> ) countTable </select> -->
+
+</mapper>

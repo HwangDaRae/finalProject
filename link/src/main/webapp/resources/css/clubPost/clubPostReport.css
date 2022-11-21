@@ -1,0 +1,87 @@
+
+/* 게시물 신고 모달창 보이는 영역 */
+
+#reportModal{
+	padding-top: 245px;
+}
+
+/* 신고모달창에서 등록 취소 버튼 */
+.custom-btn.btn-13{
+	border-radius: 10px;
+	background-color: white;
+	color: #5F0080;
+	border-color: #5F0080;
+}
+
+/* 신고모달창에서 등록 취소 버튼 마우스 호버시 */
+.custom-btn.btn-13:hover{
+	border-radius: 10px;
+	background-color: #5F0080;
+	color: white;
+	border-color: white;
+}
+
+#reportModal .form-horizontal {
+	margin: 30px;
+}
+
+#reportModal {
+	font-size: 1rem;
+}
+
+.reportSourceDiv {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+.reportSourceDivId {
+	margin-top: 15px;
+	margin-bottom: 15px;
+	width: 100px !important;
+}
+
+.reportSourceDivSource {
+	margin-top: 15px;
+	margin-bottom: 15px;
+	width: 100px !important;
+}
+
+.reportTitleTitle {
+	display: flex;
+	justify-content: center;
+	font-weight: 700 !important;
+}
+
+.reportTitle {
+	display: flex;
+	justify-content: center;
+}
+
+.reportContentTitle {
+	display: flex;
+	justify-content: center;
+	font-weight: 700 !important;
+}
+
+.reportContent {
+	display: flex;
+	justify-content: center;
+}
+
+.reportModalReason {
+	display: flex;
+	justify-content: space-evenly;
+}
+
+#title {
+	height: 50px;
+	width: 100%;
+	resize: none;
+}
+
+#content {
+	resize: none;
+	width: 100%;
+}
+

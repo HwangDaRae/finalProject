@@ -1,0 +1,30 @@
+	.searchPlace {
+		width: -webkit-fill-available;
+		position: inherit;
+		background-color: white !important;
+		color: #5F0080 !important;
+		box-shadow: rgb(0 0 0 / 30%) 0px 19px 38px, rgb(0 0 0 / 22%) 0px 15px 12px;
+		border: none !important;
+		font-weight: 700 !important;
+		margin-bottom: 25px !important;
+	}
+
+	.searchPlace:hover{
+		background-color: #5F0080 !important;
+		color: white !important;
+		transform: scale(1.1);
+		transition: transform .5s; 
+	}
+
+
+	/* ¹ÙÅÁ»ö */
+
+	html {
+		background-color: #EBEDF0 !important;
+	}
+
+	#main {
+		background-color: #EBEDF0 !important;
+	}
+
+	/* ¹ÙÅÁ»ö */

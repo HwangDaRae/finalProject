@@ -1,0 +1,43 @@
+.club_post_footer_Tag{
+	color: gray; font-size: 13px;
+}
+.club_post_footer_Tag.top_name{
+	color: gray; font-size: 20px;
+}
+#club_post_footer{
+	position: absolute !important;
+	bottom: 0 !important;
+	width: 100% !important;
+}
+#club_post_footer_img{
+	position: absolute;
+}
+#club_post_footer_img > img{
+	width: 2000px;
+}
+#club_post_logo_img{
+	position: relative; top: 0;
+}
+#club_post_logo_img > img{
+	width: 280px;
+	height: 150px;
+	margin-left: 100px;
+	height: 160px;
+	padding-top: 50px;
+}
+#logo_comment{
+	color: white;
+	/* background-color: yellow; */
+	width: 450px;
+	padding-left: 120px;
+	font-size: 30px;
+}
+#club_post_footer{
+	height: 350px; overflow: hidden; background-color: whitesmoke; position: fixed;
+}
+#club_post_footer_content{
+	position: relative;
+}
+#club_post_footer_int{
+	position: absolute; top: 10px; left: 500px; width: 1000px; height: 300px; display: grid; grid-template-columns: 2fr 3fr 2fr;
+}

@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="UserMapper">
+
+
+
+	<resultMap id="userSelectMap" type="user">
+		<result property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="password" column="password"
+			jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="rrn" column="rrn" jdbcType="VARCHAR" />
+		<result property="gender" column="gender" jdbcType="VARCHAR" />
+		<result property="phoneNo" column="phone_no" jdbcType="VARCHAR" />
+		<result property="email" column="email" jdbcType="VARCHAR" />
+		<result property="role" column="role" jdbcType="CHAR" />
+		<result property="nickName" column="nickname"
+			jdbcType="VARCHAR" />
+		<result property="profileImage" column="profile_image"
+			jdbcType="VARCHAR" />
+		<result property="profileWriting" column="profile_writing"
+			jdbcType="VARCHAR" />
+		<result property="area1" column="area1" jdbcType="VARCHAR" />
+		<result property="area2" column="area2" jdbcType="VARCHAR" />
+		<result property="area3" column="area3" jdbcType="VARCHAR" />
+		<result property="category1" column="category1"
+			jdbcType="VARCHAR" />
+		<result property="category2" column="category2"
+			jdbcType="VARCHAR" />
+		<result property="category3" column="category3"
+			jdbcType="VARCHAR" />
+		<result property="penaltyType" column="penalty_type"
+			jdbcType="CHAR" />
+		<result property="reportCount" column="report_count"
+			jdbcType="NUMERIC" />
+		<result property="stopStartDate" column="stop_start_date"
+			jdbcType="DATE" />
+		<result property="stopEndDate" column="stop_end_date"
+			jdbcType="DATE" />
+		<result property="outUserState" column="out_user_state"
+			jdbcType="CHAR" />
+		<result property="outUserDate" column="out_user_date"
+			jdbcType="DATE" />
+		<result property="addType" column="add_user_type"
+			jdbcType="CHAR" />
+		<result property="logoutDate" column="logout_date"
+			jdbcType="DATE" />
+		<result property="addUserDate" column="add_user_date"
+			jdbcType="DATE" />
+		<result property="totalVisitCount" column="total_visit_count"
+			jdbcType="NUMERIC" />
+		<result property="openCondition" column="open_condition"
+			jdbcType="CHAR" />
+		<result property="pushCondition" column="push_condition"
+			jdbcType="CHAR" />
+		<result property="joinClubCount" column="join_club_count"
+			jdbcType="NUMERIC" />
+		<result property="joinClubLimit" column="join_club_limit"
+			jdbcType="NUMERIC" />
+		<result property="snsUserId" column="sns_user_Id"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="select-list">
+		SELECT
+		user_id , password , name , gender, rrn, phone_no , email, role,
+		nickname ,
+		profile_image, profile_writing, area1, area2, area3,
+		category1, category2,
+		category3,
+		penalty_type, report_count,
+		stop_start_date, stop_end_date, out_user_state,
+		out_user_date,
+		add_user_type, logout_date, add_user_date, total_visit_count,
+		open_condition,
+		push_condition,
+		join_club_count, join_club_limit,
+		sns_user_Id
+		FROM users
+		<where>
+			<if test="(searchCondition == 0 and searchKeyword != '')">
+				user_id LIKE(#{searchKeyword}||'%')
+			</if>
+			<if test="(searchCondition == 1 and searchKeyword != '')">
+				nickname LIKE(#{searchKeyword}||'%')
+			</if>
+			<if
+				test='((searchCondition == null) and (searchKeyword == 1 or  searchKeyword == 2))'>
+				TRIM(penalty_type) = #{searchKeyword}
+			</if>
+		</where>
+		ORDER BY user_id
+	</sql>
+
+
+	<insert id="addUser" parameterType="user">
+		INSERT
+		INTO users (
+		user_id,
+		password, name, gender, rrn, phone_no, email, nickname,
+		profile_image,profile_writing,
+		area1, area2, area3, category1,
+		category2, category3, add_user_date,
+		add_user_type, sns_user_Id
+		)
+		VALUES
+		(
+		#{userId}, #{password:VARCHAR}, #{name:VARCHAR}, #{gender:VARCHAR},
+		#{rrn:VARCHAR},
+		#{phoneNo:VARCHAR}, #{email:VARCHAR},
+		#{nickName:VARCHAR}, #{profileImage:VARCHAR},
+		#{profileWriting:VARCHAR} ,
+		#{area1:VARCHAR} , #{area2:VARCHAR} ,
+		#{area3:VARCHAR} , #{category1:VARCHAR} ,
+		#{category2:VARCHAR} ,
+		#{category3:VARCHAR} , SYSDATE,
+		#{addType:CHAR}, #{snsUserId:VARCHAR}
+		)
+	</insert>
+
+	<select id="getUser" parameterType="user"
+		resultMap="userSelectMap">
+		SELECT
+		user_id , password , name , gender, rrn, phone_no , email, role,
+		nickname , profile_image,
+		profile_writing, area1, area2, area3,
+		category1, category2, category3, penalty_type,
+		report_count,
+		stop_start_date, stop_end_date, out_user_state, out_user_date,
+		add_user_type,
+		logout_date, add_user_date,
+		total_visit_count,
+		open_condition, push_condition, join_club_count, join_club_limit,
+		sns_user_Id
+		FROM users
+		<where>
+			<if test="userId != null and userId != ''">
+				user_id = #{userId}
+			</if>
+			<if
+				test="( snsUserId != null ) and (userId == '' or userId == null)">
+				sns_user_id = #{snsUserId} and TRIM(add_user_type) = #{addType}
+			</if>
+			<if test="nickName != null and userId == null">
+				nickname = #{nickName}
+			</if>
+			<if test="name != null and rrn != null and userId == null and outUserState == 0">
+				TRIM(name) = #{name} and TRIM(rrn) = #{rrn} and TRIM(out_user_state) = #{outUserState}
+			</if>
+		</where>
+	</select>
+
+	<update id="updateUser" parameterType="user">
+		UPDATE users
+		<set>
+			<if
+				test="password != null and email != null and stopEndDate == null and penaltyType == null">
+				password = #{password:VARCHAR} ,
+				email = #{email:VARCHAR}
+			</if>
+			<if test="phoneNo != null">
+				phone_no = #{phoneNo:VARCHAR}
+			</if>
+			<if test="password != null and email == null">
+				password = #{password:VARCHAR}
+			</if>
+			<if test="nickName != null">
+				nickname = #{nickName:VARCHAR} ,
+				gender =
+				#{gender:VARCHAR} ,
+				area1 = #{area1:VARCHAR} ,
+				area2 =
+				#{area2:VARCHAR} ,
+				area3 = #{area3:VARCHAR} ,
+				category1 =
+				#{category1:VARCHAR} ,
+				category2 = #{category2:VARCHAR} ,
+				category3 =
+				#{category3:VARCHAR} ,
+				profile_image = #{profileImage:VARCHAR} ,
+				profile_writing = #{profileWriting:VARCHAR}
+			</if>
+			<if test="outUserState == 1">
+				out_user_state = #{outUserState:CHAR},
+				out_user_date =
+				SYSDATE
+			</if>
+			<if test="penaltyType != null">
+				penalty_type = #{penaltyType:CHAR},
+				stop_end_date =
+				#{stopEndDate:DATE}
+			</if>
+		</set>
+		WHERE user_id = #{userId}
+	</update>
+
+	<update id="updateLogoutDate" parameterType="String">
+		UPDATE users
+		<set>
+			logout_date = SYSDATE
+		</set>
+		WHERE user_id = #{userId}
+	</update>
+
+	<update id="updateReportCount" parameterType="user">
+		UPDATE users
+		<set>
+			report_count = #{repotCount:CHAR}
+		</set>
+		WHERE user_id = #{userId}
+	</update>
+
+	<update id="updateStopStartDate" parameterType="user">
+		UPDATE users
+		<set>
+			stop_start_date = #{stopStartDate:DATE}
+		</set>
+		WHERE user_id = #{userId}
+	</update>
+
+	<update id="updatePenaltyType" parameterType="user">
+		UPDATE users
+		<set>
+			penalty_type = #{penaltyType:CHAR}
+		</set>
+		WHERE user_id = #{userId}
+	</update>
+
+	<update id="updateVisitCount" parameterType="user">
+		UPDATE users
+		<set>
+			total_visit_count = #{totalVisitCount:NUMERIC}
+		</set>
+		WHERE user_id = #{userId}
+	</update>
+
+	<update id="updateOpenCondition" parameterType="user">
+		UPDATE users
+		<set>
+			open_condition = #{openCondition:CHAR}
+		</set>
+		WHERE user_id = #{userId}
+	</update>
+
+	<update id="updatePushCondition" parameterType="user">
+		UPDATE users
+		<set>
+			push_condition = #{pushCondition:CHAR}
+		</set>
+		WHERE user_id = #{userId}
+	</update>
+
+	<update id="updateJoinClubCount" parameterType="user">
+		UPDATE users
+		<set>
+			join_club_count = #{joinClubCount:NUMERIC}
+		</set>
+		WHERE user_id = #{userId}
+	</update>
+
+	<update id="updateClub" parameterType="pay">
+		UPDATE USERS
+		<set>
+			JOIN_CLUB_LIMIT = JOIN_CLUB_LIMIT + #{ updateClubCount }
+		</set>
+		<where>
+			USER_ID = #{ user.userId }
+		</where>
+	</update>
+
+	<select id="getUserList" parameterType="search"
+		resultMap="userSelectMap">
+		SELECT *
+		FROM (
+		SELECT
+		inner_table.* ,
+		ROWNUM AS row_seq
+		FROM (
+		<include refid="select-list"></include>)
+		inner_table
+		WHERE ROWNUM &lt;= #{endRowNum} )
+		WHERE row_seq BETWEEN
+		#{startRowNum} AND #{endRowNum}
+	</select>
+
+
+
+	<select id="getTotalCount" parameterType="search"
+		resultType="int">
+		SELECT
+		COUNT(*)
+		FROM (
+		<include refid="select-list"></include>
+		) countTable
+	</select>
+
+</mapper>

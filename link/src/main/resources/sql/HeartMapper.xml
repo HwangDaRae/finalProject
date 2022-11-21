@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  						
+<mapper namespace="HeartMapper">
+
+
+
+	<resultMap	id="heartSelectMap" type="com.link.service.domain.Heart">
+		<result property="heartNo" 		column="heart_no"		jdbcType="NUMERIC"/>
+		<result property="userId" 		column="user_id" 		jdbcType="VARCHAR"/>
+		<result property="source" 		column="source" 		jdbcType="VARCHAR"/>
+		<result property="sourceNo" 	column="source_no" 		jdbcType="NUMERIC"/>
+	</resultMap>
+
+
+	
+	<!-- 좋아요하다 -->
+	<insert id="insertHeart" parameterType="heart">
+		INSERT INTO HEART (HEART_NO, USER_ID, SOURCE, SOURCE_NO)
+		VALUES( seq_heart_no.NEXTVAL, #{ userId }, #{ source }, #{ sourceNo } )
+	</insert>
+	
+	
+	<!-- 좋아요 취소하다 -->
+	<delete id="deleteHeart" parameterType="heart">
+		DELETE FROM HEART 
+		WHERE USER_ID 		= #{ userId }
+		AND TRIM(SOURCE)	= #{ source }
+		AND SOURCE_NO 		= #{ sourceNo }
+	</delete>
+	
+	
+	
+	<!-- 좋아요 개수 -->
+	<select id="getTotalHeart" parameterType="heart"		resultType="int">
+		SELECT
+		COUNT(*)
+		FROM (
+				SELECT
+				heart_no,
+				user_id,
+				source,
+				source_no
+				FROM HEART
+				WHERE TRIM(SOURCE)	= #{ source }
+				AND SOURCE_NO		= #{ sourceNo }	)
+	</select>
+	
+	
+	
+	<!-- 좋아요 테스트 : 하명훈 -->
+	<select id="checkFeedHeart"	parameterType="heart"		resultType="int">
+		SELECT
+		COUNT(*)
+		FROM	(
+					SELECT
+					heart_no,
+					user_id,
+					source,
+					source_no
+					FROM HEART
+					WHERE TRIM(source)		= #{ source }
+					AND source_no			= #{ sourceNo }	
+					AND user_id				= #{ userId	}	)
+	</select>
+	
+	
+	
+</mapper>

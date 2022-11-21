@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  						
+<mapper namespace="FeedMapper">
+
+
+
+	<resultMap	id="feedSelectMap"			type="feed">
+		<result property="feedNo"			column="feed_no"					jdbcType="NUMERIC" />
+		<result property="openCondition"	column="feed_open_condition"		jdbcType="VARCHAR" />
+		<result property="fullContent"		column="feed_full_content"			jdbcType="VARCHAR" />
+		<result property="content"			column="feed_content"				jdbcType="VARCHAR" />
+		<result property="image1"			column="feed_image1"				jdbcType="VARCHAR" />
+		<result property="image2"			column="feed_image2"				jdbcType="VARCHAR" />
+		<result property="image3"			column="feed_image3"				jdbcType="VARCHAR" />
+		<result property="image4"			column="feed_image4"				jdbcType="VARCHAR" />
+		<result property="video"			column="feed_video"					jdbcType="VARCHAR" />
+		<result property="hashtag"			column="hashtag"					jdbcType="VARCHAR" />
+		<result property="heartCount"		column="feed_heart_count"			jdbcType="NUMERIC" />
+		<result property="commentCount"		column="feed_comment_count"			jdbcType="NUMERIC" />
+		<result property="regDate"			column="feed_reg_date"				jdbcType="DATE" />
+		<result property="updateDate"		column="feed_update_date"			jdbcType="DATE" />
+		<result property="reportCondition"	column="report_condition"			jdbcType="VARCHAR" />
+		<result property="deleteCondition"	column="delete_condition"			jdbcType="VARCHAR" />
+		<result property="checkHeart"		column="exist"						jdbcType="NUMERIC" />
+		
+		<association property="user"			javaType="user">
+			<result property="userId" 			column="user_id"		 			jdbcType="VARCHAR" />
+			<result property="profileImage"		column="profile_image"				jdbcType="VARCHAR" />
+			<result property="nickName"			column="nickName"					jdbcType="VARCHAR" />
+		</association>
+		
+	</resultMap>
+
+	<resultMap id="feedCommentSelectMap" 		type="comment">
+		<result property="feedCommentNo"		column="feed_comment_no"			jdbcType="NUMERIC" />
+		<result property="feedNo"				column="feed_no"					jdbcType="NUMERIC" />
+		<result property="commentContent"		column="feed_comment_content"		jdbcType="VARCHAR" />
+		<result property="commentHeartCount"	column="feed_comment_heart_count"	jdbcType="NUMERIC" />
+		<result property="commentCount"			column="feed_comment_count"			jdbcType="NUMERIC" />
+		<result property="commentRegDate"		column="feed_comment_reg_date"		jdbcType="DATE" />
+		<result property="commentUpdateDate"	column="feed_comment_update_date"	jdbcType="DATE" />
+		<result property="reportCondition"		column="report_condition"			jdbcType="VARCHAR" />
+		<result property="deleteCondition"		column="delete_condition"			jdbcType="VARCHAR" />
+		<result property="parentUserId"			column="delete_user_id"				jdbcType="VARCHAR" />
+		<result property="parent"				column="parent"						jdbcType="NUMERIC" />
+		<result property="depth"				column="depth"						jdbcType="NUMERIC" />
+		<result property="sequence"				column="sequence"					jdbcType="NUMERIC" />
+		<result property="heartCondition"		column="exist"						jdbcType="NUMERIC" />
+			
+		<association property="user"			javaType="user">
+			<result property="userId" 			column="user_id"		 			jdbcType="VARCHAR" />
+			<result property="profileImage"		column="profile_image"				jdbcType="VARCHAR" />
+			<result property="nickName"			column="nickName"					jdbcType="VARCHAR" />
+		</association>
+		
+	
+	</resultMap>
+
+
+
+	<!--====================Feed====================-->
+	<!--====================Feed====================-->
+	<!--====================Feed====================-->
+
+
+
+	<insert 	id="addFeed"					parameterType="feed">
+		INSERT INTO feed
+		VALUES (
+			seq_feed_no.nextval,
+			#{user.userId:VARCHAR},
+			#{openCondition:VARCHAR},
+			#{fullContent:VARCHAR},
+			#{content:VARCHAR},
+			#{image1:VARCHAR},
+			#{image2:VARCHAR},
+			#{image3:VARCHAR},
+			#{image4:VARCHAR},
+			#{video:VARCHAR},
+			#{hashtag:VARCHAR},
+			0,
+			0,
+			SYSDATE,
+			#{updateDate:DATE},
+			'0',
+			'0'	)
+	</insert>
+	
+	
+	
+	<select 	id="getFeed"					parameterType="hashmap"			resultMap="feedSelectMap">
+		SELECT 
+		f.feed_no, f.user_id, u.profile_image, u.nickName , f.feed_open_condition, f.feed_full_content, f.feed_content, 
+		f.feed_image1, f.feed_image2, f.feed_image3, f.feed_image4, f.feed_video, f.hashtag, f.feed_heart_count, f.feed_comment_count, 
+		f.feed_reg_date, f.feed_update_date, f.report_condition, f.delete_condition
+		<choose>
+			<when test="user != null">
+				, isLike.EXIST FROM feed f, users u, (
+												SELECT
+												source_no as EXIST
+												FROM HEART
+												WHERE TRIM(source)		= '0'
+												AND user_id			= #{user.userId}
+																							) isLike
+			WHERE f.feed_no							= isLike.EXIST(+) 
+			AND f.user_id							= u.user_id
+			AND f.feed_no							= #{feedNo}
+			</when>
+			<otherwise>
+			FROM feed f, users u
+			WHERE f.feed_no							= #{feedNo}
+			AND f.user_id							= u.user_id
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select		id="getFeedLast"				resultMap="feedSelectMap">
+		SELECT
+		*
+		FROM	(	SELECT
+					*
+					FROM FEED
+					ORDER BY feed_no DESC)
+		WHERE ROWNUM = 1
+	</select>
+	
+	
+	
+	<update		id="updateFeed"					parameterType="feed">
+		UPDATE feed
+		<set>
+			<choose>
+				<when test="checkHeart == 1">feed_heart_count = feed_heart_count + 1</when>
+				<when test="checkHeart == -1">feed_heart_count = feed_heart_count - 1</when>
+				<when test="checkComment == 1">feed_comment_count = feed_comment_count + 1</when>
+				<when test="checkComment == -1">feed_comment_count = feed_comment_count - 1</when>
+				<otherwise>
+					feed_open_condition				= #{openCondition:VARCHAR},
+					feed_full_content				= #{fullContent:VARCHAR},
+					feed_content					= #{content:VARCHAR},
+					feed_image1						= #{image1:VARCHAR},
+					feed_image2						= #{image2:VARCHAR},
+					feed_image3						= #{image3:VARCHAR},
+					feed_image4						= #{image4:VARCHAR},
+					feed_video						= #{video:VARCHAR},
+					hashtag							= #{hashtag:VARCHAR},
+					feed_update_date				= SYSDATE,
+					report_condition				= #{reportCondition}
+				</otherwise>
+			</choose>
+		</set>	
+		WHERE feed_no 							= #{feedNo}
+	</update>
+	
+
+
+	<!-- 사용 -->
+	<update		id="deleteFeed"					parameterType="int">
+		UPDATE feed
+		<set>
+			delete_condition				= '1'
+		</set>
+		WHERE feed_no 						= #{feedNo}
+	</update>
+	<!-- 사용 -->
+	
+	
+	
+	<!-- 사용 -->
+	<update		id="reportFeed"					parameterType="int">
+		UPDATE feed
+		<set>
+			report_condition				= '1'
+		</set>
+		WHERE feed_no 						= #{feedNo}
+	</update>
+	<!-- 사용 -->
+	
+	
+	
+	<update		id="updateFeedCommentCount"		parameterType="comment">
+		UPDATE feed
+		<set>
+			feed_comment_count				= feed_comment_count + 1
+		</set>
+		WHERE feed_no						= #{feedNo}
+	</update>
+	
+	
+	
+	<!--====================Feed Comment====================-->
+	<!--====================Feed Comment====================-->
+	<!--====================Feed Comment====================-->
+	
+	
+	
+	<insert 	id="addFeedComment"				parameterType="comment">
+		INSERT into feed_comment
+		VALUES (
+			seq_feed_comment_no.nextval,
+			#{feedNo:NUMERIC},
+			#{user.userId:VARCHAR},
+			#{commentContent:VARCHAR},
+			0,
+			0,
+			SYSDATE,
+			null,
+			'0',
+			'0',
+			null,
+			#{parent:NUMERIC},
+			#{depth:NUMERIC},
+			#{sequence:NUMERIC}				)
+	</insert>
+	
+	
+	
+	<!-- 사용 : 댓글 수정시 -->
+	<select 	id="getFeedComment"				parameterType="int"			resultMap="feedCommentSelectMap">
+		SELECT 
+		c.feed_comment_no,
+		c.feed_no,
+		c.user_id,
+		c.feed_comment_content,
+		c.feed_comment_heart_count,
+		c.feed_recomment_count,
+		c.feed_comment_reg_date,
+		c.feed_comment_update_date,
+		c.report_condition,
+		c.delete_condition,
+		c.parent,
+		c.depth,
+		c.sequence
+		FROM feed_comment c, users u
+		WHERE feed_comment_no 	= #{feed_comment_no}
+		AND c.user_id			= u.user_id
+	</select>
+	<!-- 사용 : 댓글 수정시 -->
+	
+	<select 	id="getFeedLastComment"			resultMap="feedCommentSelectMap">
+		SELECT
+		*
+		FROM	(	SELECT
+					*
+					FROM FEED_COMMENT
+					ORDER BY feed_comment_no DESC)
+		WHERE ROWNUM = 1
+	</select>
+	
+	
+	
+	<!-- 사용 : 댓글 수정시 -->
+	<update 	id="updateFeedComment"			parameterType="comment">
+		UPDATE feed_comment
+		<set>
+			<choose>
+				<when test="heartCondition == 1">feed_comment_heart_count = feed_comment_heart_count + 1</when>
+				<when test="heartCondition == -1">feed_comment_heart_count = feed_comment_heart_count - 1</when>
+				<otherwise>
+					feed_comment_content			= #{commentContent},
+					feed_comment_update_date		= SYSDATE,
+				</otherwise>
+			</choose>
+		</set>
+		WHERE feed_comment_no						= #{feedCommentNo}
+	</update>
+	<!-- 사용 : 댓글 수정시 -->
+	
+	
+	
+	<update 	id="updateFeedCommentOrder"		parameterType="comment">
+		UPDATE feed_comment
+		<set>
+			<choose>
+				<when test="heartCondition == 1">sequence	= TO_NUMBER(sequence) + 1</when>
+				<when test="heartCondition == -1">sequence	= TO_NUMBER(sequence) - 1</when>
+			</choose>
+		</set>
+		WHERE sequence					&gt;= #{sequence}
+		AND feed_no							= #{feedNo}
+	</update>
+	
+			
+											 
+	<!-- 사용 -->
+	<update		id="deleteFeedComment"			parameterType="comment">
+		UPDATE feed_comment
+		<set>
+			delete_condition				= '1'
+		</set>
+		WHERE feed_comment_no				= #{feedCommentNo}
+	</update>
+	<!-- 사용 -->
+	
+	
+	
+	<!-- 사용 -->
+	<update		id="reportFeedComment"			parameterType="int">
+		UPDATE feed_comment
+		<set>
+			report_condition				= '1'
+		</set>
+		WHERE feed_comment_no				= #{feedCommentNo}
+	</update>
+	<!-- 사용 -->
+	
+	
+	
+	<!-- 사용 -->
+	<select		id="getFeedCommentBySequence"	parameterType="hashmap"			resultMap="feedCommentSelectMap">
+		SELECT
+		feed_comment_no,
+		feed_no,
+		user_id,
+		feed_comment_content,
+		feed_comment_heart_count,
+		feed_recomment_count,
+		feed_comment_reg_date,
+		feed_comment_update_date,
+		report_condition,
+		delete_condition,
+		parent,
+		depth,
+		sequence
+		FROM feed_comment					
+		WHERE feed_no  						= #{comment.feedNo}
+		AND sequence						= #{comment.sequence}
+	</select>
+	
+	<select		id="getChildrenCommentCount"	parameterType="hashmap"		resultType="int">
+	SELECT
+	COUNT(*)
+	FROM feed_comment
+	WHERE feed_no			=	#{feedNo}
+	<choose>
+		<when test="comment.clubNo == 0">
+		AND parent			=	#{comment.parent}	
+		</when>
+		<when test="comment.clubNo == 1">
+		AND parent			=	#{comment.feedCommentNo}	
+		</when>
+	</choose>
+	
+	</select>
+	
+	
+	
+	<!--========================================List========================================-->
+	<!--========================================List========================================-->
+	<!--========================================List========================================-->
+	
+	
+	
+	<!--========================================사용========================================-->
+	<select 	id="getFeedList"			parameterType="hashmap"		resultMap="feedSelectMap">
+		SELECT
+		inner_table.*
+		FROM (
+			SELECT
+			rownum AS row_seq,
+			deep_table.*
+			FROM (
+					SELECT 
+					f.feed_no, f.user_id, u.nickName, u.profile_image, f.feed_open_condition, f.feed_full_content, f.feed_content, 
+					f.feed_image1, f.feed_image2, f.feed_image3, f.feed_image4, f.feed_video, f.hashtag, f.feed_heart_count, f.feed_comment_count, 
+					f.feed_reg_date, f.feed_update_date, f.report_condition, f.delete_condition
+					<choose>
+						<when test="user != null">
+							, isLike.EXIST FROM users u, feed f, (
+															SELECT
+															source_no as EXIST
+															FROM HEART
+															WHERE TRIM(source)		= '0'
+															AND user_id				= #{user.userId}
+																										) isLike
+							<where>
+							u.user_id = f.user_id
+							AND f.feed_no = isLike.EXIST(+)
+							AND f.feed_open_condition	=	'3'
+							AND f.report_condition		=	'0'
+							AND f.delete_condition		=	'0'
+							</where>
+							<if test="search.searchKeyword != null">
+								AND f.feed_content LIKE '%${search.searchKeyword}%'
+							</if>
+							
+							<!-- 마이홈페이지 유무 -->
+							<if test="myHome == 1">
+								AND f.user_id		= #{user.userId}		
+							</if>
+							ORDER BY feed_no DESC		) deep_table
+							
+							WHERE TRIM(deep_table.user_id) NOT IN(
+											SELECT
+											recv_user_id AS NAME
+											FROM FOLLOW_BLOCK
+											WHERE send_user_id = #{user.userId}
+											AND STATE = '1'
+											AND TYPE = '2'
+															)	
+							AND ROWNUM &lt;= #{search.endRowNum} 					) inner_table
+						</when>
+						<otherwise>
+						FROM users u, feed f
+						WHERE u.user_id = f.user_id
+						AND f.feed_open_condition	=	'3'
+						AND f.report_condition		=	'0'
+						AND f.delete_condition		=	'0'
+						<if test="search.searchKeyword != null">
+							AND f.feed_content LIKE '%${search.searchKeyword}%'
+						</if>
+						ORDER BY feed_no DESC			) deep_table
+						WHERE ROWNUM &lt;= #{search.endRowNum} 					) inner_table
+						</otherwise>
+					</choose>
+		WHERE row_seq BETWEEN #{search.startRowNum} AND #{search.endRowNum}
+	</select>
+	<!--========================================사용========================================-->
+	
+	
+	
+	<!-- 사용 -->
+	<select 	id="getFeedCommentList"			parameterType="hashmap"		resultMap="feedCommentSelectMap">
+	
+	SELECT
+		inner_table.*
+		FROM (
+			SELECT
+			rownum AS row_seq,
+			deep_table.*
+			FROM (
+					SELECT 
+					c.feed_comment_no, c.feed_no, c.user_id, u.nickName, u.profile_image, c.feed_comment_content, c.feed_comment_heart_count, c.feed_recomment_count,
+					c.feed_comment_reg_date, c.feed_comment_update_date, c.report_condition, c.delete_condition, c.parent, c.depth, c.sequence
+					<choose>
+						<when test="user != null">
+							, isLike.EXIST FROM feed_comment c, users u, (
+																	SELECT
+																	source_no as EXIST
+																	FROM HEART
+																	WHERE TRIM(source) 	= '1'
+																	AND user_id			= #{user.userId}
+																	
+																									) isLike
+							<where>
+							c.feed_comment_no = isLike.EXIST(+)
+							AND c.user_id						= u.user_id
+							AND c.feed_no						= #{feedNo}
+							AND delete_condition				= '0'
+							</where>
+							
+							ORDER BY sequence ASC
+						</when>
+						<otherwise>
+						FROM feed_comment c, users u
+						WHERE delete_condition				= '0'
+						AND c.user_id						= u.user_id
+						AND c.feed_no						= #{feedNo}
+						ORDER BY sequence ASC
+						</otherwise>
+					</choose>
+												) deep_table
+		
+			<choose>
+			<when test="search.order == 0">
+			WHERE ROWNUM &lt;= #{search.endRowNum} 					) inner_table
+		WHERE row_seq BETWEEN #{search.startRowNum} AND #{search.endRowNum}	
+			</when>
+			
+			<when test="search.order != 0">
+			WHERE ROWNUM &lt;= #{search.endRowNum} * #{search.order} 					) inner_table
+		WHERE row_seq BETWEEN 0 AND #{search.endRowNum} * #{search.order}	
+			</when>
+		</choose>
+		
+	</select>
+	
+	
+	
+	
+	<!--====================Count====================-->
+	<!--====================Count====================-->
+	<!--====================Count====================-->
+	
+	
+	
+	<select 	id="getTotalFeedCount"			parameterType="search"		resultType="int">
+		SELECT
+	  	COUNT(*)
+	  	FROM (
+	  			SELECT 
+	  			feed_no,
+				user_id,
+				feed_open_condition,
+				feed_full_content,
+				feed_content,
+				feed_image1,
+				feed_image2,
+				feed_image3,
+				feed_image4,
+				feed_video,
+				hashtag,
+				feed_heart_count,
+				feed_comment_count,
+				feed_reg_date,
+				feed_update_date,
+				report_condition,
+				delete_condition
+				FROM feed
+				WHERE delete_condition				= '0'
+				AND report_condition				= '0'			
+															)
+	</select>
+	
+	
+	
+	<select 	id="getTotalFeedCommentCount"	parameterType="hashmap"		resultType="int">
+		SELECT
+	  	COUNT(*)
+	  	FROM (
+	  			SELECT 
+	  			feed_comment_no,
+				feed_no,
+				user_id,
+				feed_comment_content,
+				feed_comment_heart_count,
+				feed_recomment_count,
+				feed_comment_reg_date,
+				feed_comment_update_date,
+				report_condition,
+				delete_condition,
+				parent,
+				depth,
+				sequence
+				FROM feed_comment
+				WHERE feed_no				= #{feedNo}
+				AND delete_condition		= '0'
+				ORDER BY feed_comment_no ASC	)
+	</select>
+	
+	
+	
+		
+</mapper>

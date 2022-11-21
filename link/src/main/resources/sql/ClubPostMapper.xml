@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  						
+<mapper namespace="ClubPostMapper">
+
+
+
+	<resultMap	id="clubPostSelectMap" type="com.link.service.domain.ClubPost">
+		<result property="clubNo" 					column="club_no" 					jdbcType="NUMERIC"/>
+		<result property="clubPostNo"				column="club_post_no" 				jdbcType="NUMERIC"/>
+		<result property="clubPostTitle" 			column="club_post_title" 			jdbcType="VARCHAR"/>
+		<result property="clubPostContent" 			column="club_post_content" 			jdbcType="VARCHAR"/>
+		<result property="clubPostVideo1" 			column="club_post_video1" 			jdbcType="VARCHAR"/>
+		<result property="clubPostVideo2" 			column="club_post_video2" 			jdbcType="VARCHAR"/>
+		<result property="clubPostVideo3" 			column="club_post_video3" 			jdbcType="VARCHAR"/>
+		<result property="clubPostRegDate" 			column="club_post_reg_date" 		jdbcType="VARCHAR"/>
+		<result property="clubPostUpdateDate" 		column="club_post_update_date" 		jdbcType="VARCHAR"/>
+		<result property="clubPostHeartCount" 		column="club_post_heart_count" 		jdbcType="NUMERIC"/>
+		<result property="clubPostCommentCount" 	column="club_post_comment_count" 	jdbcType="NUMERIC"/>
+		<result property="heartCondition"		 	column="heart_condition"		 	jdbcType="NUMERIC"/>
+		<result property="clubRole" 				column="club_role"					jdbcType="VARCHAR"/>
+		<result property="image1" 					column="image1" 					jdbcType="VARCHAR"/>
+		<result property="image2" 					column="image2" 					jdbcType="VARCHAR"/>
+		<result property="image3" 					column="image3" 					jdbcType="VARCHAR"/>
+		<result property="image4" 					column="image4" 					jdbcType="VARCHAR"/>
+		<result property="image5" 					column="image5" 					jdbcType="VARCHAR"/>
+		<result property="image6" 					column="image6" 					jdbcType="VARCHAR"/>
+		<result property="image7" 					column="image7" 					jdbcType="VARCHAR"/>
+		<result property="image8" 					column="image8" 					jdbcType="VARCHAR"/>
+		<result property="image9" 					column="image9" 					jdbcType="VARCHAR"/>
+		<result property="image10" 					column="image10" 					jdbcType="VARCHAR"/>
+		
+		<association property="user"				javaType="user">
+			<result property="userId"				column="user_id"		 			jdbcType="VARCHAR" />
+			<result property="profileImage"			column="profile_image"				jdbcType="VARCHAR" />
+			<result property="nickName"				column="nickName"					jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	
+
+	
+	<resultMap	id="paySelectMap" type="com.link.service.domain.Pay">
+		<result property="payNo" 					column="PAY_NO" 					jdbcType="NUMERIC"/>
+		<result property="clubNo" 					column="CLUB_NO" 					jdbcType="NUMERIC"/>
+		<result property="payProduct" 				column="PAY_PRODUCT" 				jdbcType="VARCHAR"/>
+		<result property="payOption" 				column="PAY_OPTION" 				jdbcType="VARCHAR"/>
+		<result property="totalPrice" 				column="TOTAL_PRICE" 				jdbcType="NUMERIC"/>
+		<result property="payRegDate" 				column="PAY_REG_DATE" 				jdbcType="DATE"/>
+		<result property="updateClubCount" 			column="UPDATE_CLUB_COUNT" 			jdbcType="NUMERIC"/>
+		<result property="updateClubMemberCount" 	column="UPDATE_CLUB_MEMBER_COUNT" 	jdbcType="NUMERIC"/>
+		<result property="merchant_uid" 			column="MERCHANT_UID" 				jdbcType="VARCHAR"/>
+		
+		<association property="user"				javaType="user">
+			<result property="userId" 				column="user_id"		 			jdbcType="VARCHAR" />
+			<result property="profileImage"			column="profile_image"				jdbcType="VARCHAR" />
+			<result property="nickName"				column="nickName"					jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	
+	
+	
+	<resultMap	id="chatSelectMap" type="com.link.service.domain.Chat">
+		<result property="chatNo" 					column="CHAT_NO" 					jdbcType="NUMERIC"/>
+		<result property="roomId" 					column="roomId" 					jdbcType="VARCHAR"/>
+		<result property="userId" 					column="USER_ID" 					jdbcType="VARCHAR"/>
+		<result property="userId2" 					column="USER_ID2" 					jdbcType="VARCHAR"/>
+		
+		<association property="user"				javaType="user">
+			<result property="userId" 				column="user_id"		 			jdbcType="VARCHAR" />
+			<result property="profileImage"			column="profile_image"				jdbcType="VARCHAR" />
+			<result property="nickName"				column="nickName"					jdbcType="VARCHAR" />
+		</association>
+		
+		<association property="user2"				javaType="user">
+			<result property="userId" 				column="user_id"		 			jdbcType="VARCHAR" />
+			<result property="profileImage"			column="profile_image"				jdbcType="VARCHAR" />
+			<result property="nickName"				column="nickName"					jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	
+	
+	
+	
+	
+	<!-- /////////////////////////////////////////////////////////////// CLUBPOST /////////////////////////////////////////////////////////////// -->
+	
+
+
+
+	
+	<sql id="select-list">
+		SELECT ROW_NUMBER() OVER(ORDER BY 
+										<choose>
+											<when test="search.order == 2">CLUB_POST_HEART_COUNT DESC, CLUB_POST_NO DESC</when>
+											<when test="search.order == 1">CLUB_POST_NO ASC</when>
+										<otherwise>
+											CLUB_POST_NO DESC
+										</otherwise>
+										</choose> ) AS R, V2.*
+		FROM ( SELECT CP.CLUB_NO, CP.CLUB_POST_NO, CP.IMAGE1, CP.CLUB_POST_VIDEO1, CP.CLUB_POST_TITLE, CP.USER_ID, U.PROFILE_IMAGE, U.NICKNAME, CP.CLUB_POST_HEART_COUNT, HEART_CONDITION
+				FROM CLUB_POST CP, USERS U, ( SELECT SOURCE_NO AS HEART_CONDITION
+												FROM HEART
+												WHERE TRIM(SOURCE) = '2' AND USER_ID = #{ clubPost.user.userId } ) V1
+				WHERE HEART_CONDITION (+) = CP.CLUB_POST_NO AND CP.USER_ID = U.USER_ID AND CLUB_NO = 
+				<choose>
+					<when test="clubPost.clubNo != 0">#{ clubPost.clubNo }
+						<if test="search.order == 3">AND CP.USER_ID = #{ clubPost.user.userId }</if>
+					</when>
+				</choose>
+				AND REPORT_CONDITION = '0' AND DELETE_CONDITION = '0'
+				<if test="search.searchKeyword != '' and search.searchCondition != ''">
+					<choose>
+						<when test="search.searchCondition == 0">AND CP.USER_ID LIKE '%'||#{search.searchKeyword}||'%'</when>
+						<when test="search.searchCondition == 1">AND CLUB_POST_CONTENT LIKE '%'||#{search.searchKeyword}||'%'</when>
+					</choose>
+				</if>
+		) V2
+	</sql>
+	
+
+
+	<!-- 모임게시물 등록 -->
+	<insert id="addClubPost" parameterType="com.link.service.domain.ClubPost">
+	 	INSERT INTO CLUB_POST (CLUB_POST_NO, CLUB_NO, USER_ID, CLUB_POST_TITLE, CLUB_POST_CONTENT, CLUB_POST_VIDEO1, CLUB_POST_VIDEO2, 
+		CLUB_POST_VIDEO3, CLUB_POST_REG_DATE, CLUB_POST_UPDATE_DATE, CLUB_POST_HEART_COUNT, CLUB_POST_COMMENT_COUNT, REPORT_CONDITION,
+		DELETE_CONDITION, IMAGE1, IMAGE2, IMAGE3, IMAGE4, IMAGE5, IMAGE6, IMAGE7, IMAGE8, IMAGE9, IMAGE10)
+		VALUES (seq_club_post_no.NEXTVAL, #{clubNo}, #{user.userId}, #{clubPostTitle:VARCHAR}, #{clubPostContent:VARCHAR},
+		#{clubPostVideo1:VARCHAR}, #{clubPostVideo2:VARCHAR}, #{clubPostVideo3:VARCHAR}, sysdate, null, 0, 0, '0', '0',
+		#{image1:VARCHAR}, #{image2:VARCHAR}, #{image3:VARCHAR}, #{image4:VARCHAR}, #{image5:VARCHAR}, #{image6:VARCHAR},
+		#{image7:VARCHAR}, #{image8:VARCHAR}, #{image9:VARCHAR}, #{image10:VARCHAR})
+	</insert>
+	
+	
+	
+	<!-- 모임게시물 탭 클릭시 => 최근 가입한 모임의 모임게시물리스트 가져온다 -->
+	<select id="getClubPostList" parameterType="map" resultMap="clubPostSelectMap">
+		<!-- SELECT V3.*
+		FROM (  -->
+				<include refid="select-list"></include>
+			 <!-- ) V3
+		WHERE R BETWEEN ((#{ search.currentPage }-1)*#{ search.pageSize }+1) AND #{ search.currentPage }*#{ search.pageSize } -->
+	</select>
+	
+	
+	
+	<!-- 모임게시물 탭 클릭시 => 최근 가입한 모임의 모임게시물리스트의 개수 가져온다 -->
+	<select id="getClubPostListCount" parameterType="map" resultType="int">
+		SELECT COUNT(*)
+		FROM ( <!--  SELECT ROW_NUMBER() OVER(ORDER BY CLUB_POST_NO DESC) AS R, V2.*
+				FROM ( -->
+						<include refid="select-list"></include>
+					<!-- ) V2 -->
+			 ) V3
+	</select>
+	
+	
+	
+	<!-- 모임게시물 상세보기 -->
+	<select id="getClubPost" parameterType="clubPost" resultMap="clubPostSelectMap">
+		SELECT CP.CLUB_POST_NO, CP.CLUB_NO, CP.USER_ID, U.PROFILE_IMAGE, U.NICKNAME, CP.CLUB_POST_TITLE, CP.CLUB_POST_CONTENT,
+		CP.CLUB_POST_VIDEO1, CP.CLUB_POST_VIDEO2, CP.CLUB_POST_VIDEO3, TO_CHAR(CP.CLUB_POST_REG_DATE, '""YYYY"년 "MM"월 "DD"일" ""HH24"시 "MI"분 "SS"초"') AS CLUB_POST_REG_DATE,
+		TO_CHAR(CP.CLUB_POST_UPDATE_DATE, '""YYYY"년 "MM"월 "DD"일" ""HH24"시 "MI"분 "SS"초"') AS CLUB_POST_UPDATE_DATE,
+		CP.CLUB_POST_HEART_COUNT, CP.CLUB_POST_COMMENT_COUNT, CP.IMAGE1, CP.IMAGE2, CP.IMAGE3, CP.IMAGE4, CP.IMAGE5, CP.IMAGE6,
+		CP.IMAGE7, CP.IMAGE8, CP.IMAGE9, CP.IMAGE10, HEART_CONDITION, CLUB_ROLE
+		FROM CLUB_POST CP, USERS U, ( SELECT SOURCE_NO AS HEART_CONDITION
+										FROM HEART
+										WHERE TRIM(SOURCE) = '2' AND USER_ID = #{ user.userId } ) V1, ( SELECT member_role AS CLUB_ROLE, USER_ID
+																										FROM CLUB_USER 
+																										WHERE USER_ID = #{ user.userId } AND CLUB_NO = #{ clubNo } ) V2
+		WHERE CP.USER_ID = U.USER_ID AND HEART_CONDITION (+) = CP.CLUB_POST_NO AND V2.USER_ID (+) = U.USER_ID AND CP.CLUB_POST_NO = #{ clubPostNo }
+	</select>
+	
+	
+	
+	<!-- 수정하는 모임게시물 -->
+	<update id="updateClubPost" parameterType="map">
+		UPDATE CLUB_POST
+		SET
+		<choose>
+			<when test="clubPost.heartCondition == 1">CLUB_POST_HEART_COUNT = CLUB_POST_HEART_COUNT + 1</when>
+			<when test="clubPost.heartCondition == -1">CLUB_POST_HEART_COUNT = CLUB_POST_HEART_COUNT - 1</when>
+			<when test="clubPost.clubPostCommentNo > 0">CLUB_POST_COMMENT_COUNT= CLUB_POST_COMMENT_COUNT + 1</when>
+			<when test="clubPost.clubPostCommentNo == -1">CLUB_POST_COMMENT_COUNT= CLUB_POST_COMMENT_COUNT - 1</when>
+			<when test="clubPost.clubPostCommentNo == -1 and comment.depth == 1">CLUB_POST_COMMENT_COUNT= CLUB_POST_COMMENT_COUNT - ${ comment.commentCount }</when>
+			<when test="report.reportCondition == 1 and report.reportReason > 0">REPORT_CONDITION = 1</when>
+			<otherwise>
+				CLUB_POST_TITLE = #{ clubPost.clubPostTitle }, CLUB_POST_CONTENT = #{ clubPost.clubPostContent }, CLUB_POST_VIDEO1 = #{ clubPost.clubPostVideo1:VARCHAR }, CLUB_POST_VIDEO2 = #{ clubPost.clubPostVideo2:VARCHAR },
+				CLUB_POST_VIDEO3 = #{ clubPost.clubPostVideo3:VARCHAR }, CLUB_POST_UPDATE_DATE = sysdate, IMAGE1 = #{ clubPost.image1:VARCHAR }, IMAGE2 = #{ clubPost.image2:VARCHAR }, IMAGE3 = #{ clubPost.image3:VARCHAR },
+				IMAGE4 = #{ clubPost.image4:VARCHAR }, IMAGE5 = #{ clubPost.image5:VARCHAR }, IMAGE6 = #{ clubPost.image6:VARCHAR }, IMAGE7 = #{ clubPost.image7:VARCHAR }, IMAGE8 = #{ clubPost.image8:VARCHAR },
+				IMAGE9 = #{ clubPost.image9:VARCHAR }, IMAGE10 = #{ clubPost.image10:VARCHAR }
+			</otherwise>
+		</choose>
+		WHERE CLUB_POST_NO = #{ clubPost.clubPostNo }
+	</update>
+	
+	
+	
+	<!-- 삭제하는 모임게시물 -->
+	<update id="deleteClubPost" parameterType="clubPost">
+		UPDATE CLUB_POST SET DELETE_CONDITION = '1', DELETE_USER_ID = #{ user.userId } WHERE CLUB_POST_NO = #{ clubPostNo }
+	</update>
+	
+	
+	
+	<select id="getCurrval" parameterType="clubPost" resultMap="clubPostSelectMap">
+		SELECT ROWNUM, seq_club_post_no.currval AS CLUB_POST_NO, CLUB_NO, USER_ID FROM CLUB_POST WHERE USER_ID = #{ user.userId } AND ROWNUM = 1
+	</select>
+	
+	
+	
+		
+	
+	<!-- /////////////////////////////////////////////////////////////// MYHOME /////////////////////////////////////////////////////////////// -->
+	
+	
+	
+	
+	
+	<!-- 마이홈피 - 내가 작성한 모임게시물 리스트 -->
+	<select id="getClubPostListMyHome" parameterType="string" resultMap="clubPostSelectMap">
+		SELECT CP.CLUB_NO, CP.CLUB_POST_NO, CP.IMAGE1, CP.CLUB_POST_TITLE, CP.USER_ID, U.NICKNAME, U.PROFILE_IMAGE, CP.CLUB_POST_HEART_COUNT, HEART_CONDITION, CP.CLUB_POST_VIDEO1,
+		TO_CHAR(CP.CLUB_POST_REG_DATE, '""YYYY"-"MM"-"DD""') AS CLUB_POST_REG_DATE,
+		TO_CHAR(CP.CLUB_POST_UPDATE_DATE, '""YYYY"-"MM"-"DD""' ) AS CLUB_POST_UPDATE_DATE
+		FROM CLUB_POST CP, USERS U, ( SELECT SOURCE_NO AS HEART_CONDITION
+												FROM HEART
+												WHERE TRIM(SOURCE) = '2' AND USER_ID = #{ clubPost.user.userId } ) V1
+		WHERE CP.USER_ID = U.USER_ID AND CP.CLUB_POST_NO = HEART_CONDITION (+) AND CP.USER_ID = #{ userId } AND CP.REPORT_CONDITION = '0' AND CP.DELETE_CONDITION = '0'
+		ORDER BY CP.CLUB_POST_REG_DATE DESC
+	</select>
+	
+	
+	
+	<!-- 마이홈피 - 내가 작성한 모임게시물 리스트 개수 -->
+	<select id="getClubPostListMyHomeCount" parameterType="string" resultType="int">
+		SELECT COUNT(*) FROM CLUB_POST WHERE USER_ID = #{ userId } AND REPORT_CONDITION = '0' AND DELETE_CONDITION = '0'
+	</select>
+	
+	
+	
+	
+	
+	<!-- /////////////////////////////////////////////////////////////// PAY /////////////////////////////////////////////////////////////// -->
+
+	
+	
+	
+	
+	<!-- 결제추가 -->
+	<insert id="addPay" parameterType="pay">
+		INSERT INTO PAY (PAY_NO, USER_ID, CLUB_NO, PAY_PRODUCT, PAY_OPTION, TOTAL_PRICE, PAY_REG_DATE, UPDATE_CLUB_COUNT, UPDATE_CLUB_MEMBER_COUNT, MERCHANT_UID)
+		VALUES (seq_pay_no.NEXTVAL, #{ user.userId }, #{ clubNo }, 
+																	<choose>
+																		<when test="payProduct == 0">'모임 추가',</when>
+																		<otherwise>'모임원 추가',</otherwise>
+																	</choose>
+																	<choose>
+																		<when test="payOption == 0">'신용카드',</when>
+																		<when test="payOption == 1">'카카오페이',</when>
+																		<when test="payOption == 2">'휴대폰결제',</when>
+																		<when test="payOption == 3">'토스페이',</when>
+																		<otherwise>'실시간 계좌이체',</otherwise>
+																	</choose>
+						#{ totalPrice }, SYSDATE, #{ updateClubCount:NUMERIC }, #{ updateClubMemberCount:NUMERIC }, #{ merchant_uid:VARCHAR } )
+	</insert>
+	
+
+	
+	<!-- 결제 리스트 -->
+	<select id="getPayList" parameterType="user" resultMap="paySelectMap">
+		SELECT PAY_NO, U.USER_ID, U.NICKNAME, U.PROFILE_IMAGE, CLUB_NO, PAY_PRODUCT, PAY_OPTION, TOTAL_PRICE,
+		TO_CHAR(PAY_REG_DATE, '""YYYY"-"MM"-"DD"" ""HH24":"MI""') AS PAY_REG_DATE, UPDATE_CLUB_COUNT, UPDATE_CLUB_MEMBER_COUNT, MERCHANT_UID
+		FROM PAY P, USERS U
+		WHERE P.USER_ID = U.USER_ID AND U.USER_ID = #{ userId }
+		ORDER BY PAY_REG_DATE DESC
+	</select>
+	
+	
+	
+	<!-- 결제 상세보기 -->
+	<select id="getPay" parameterType="pay" resultMap="paySelectMap">
+		SELECT PAY_NO, U.USER_ID, U.NICKNAME, U.PROFILE_IMAGE, CLUB_NO, PAY_PRODUCT, PAY_OPTION, TOTAL_PRICE,
+		TO_CHAR(PAY_REG_DATE, '""YYYY"-"MM"-"DD"" ""HH24":"MI""') AS PAY_REG_DATE, UPDATE_CLUB_COUNT, UPDATE_CLUB_MEMBER_COUNT, MERCHANT_UID
+		FROM PAY P, USERS U
+		WHERE P.USER_ID = U.USER_ID AND PAY_NO = #{ payNo }
+	</select>
+	
+	
+	
+	
+	
+	<!-- /////////////////////////////////////////////////////////////// Chat /////////////////////////////////////////////////////////////// -->
+	
+	
+	<insert id="addChat" parameterType="com.link.service.domain.Chat">
+		INSERT INTO CHAT (CHAT_NO, USER_ID, ROOMID, USER_ID2) VALUES(seq_chat_no.NEXTVAL, #{ user.userId }, #{ roomId }, #{ user2.userId })
+	</insert>
+
+
+
+	<select id="getChatList" parameterType="com.link.service.domain.Chat" resultMap="chatSelectMap">
+		SELECT *
+		FROM ( SELECT * FROM CHAT WHERE USER_ID = #{ user.userId } OR USER_ID2 = #{ user.userId } )
+		WHERE USER_ID = #{ user2.userId } OR USER_ID2 = #{ user2.userId }
+	</select>
+
+
+
+	<select id="getChat" parameterType="com.link.service.domain.Chat" resultMap="chatSelectMap">
+		SELECT * FROM CHAT WHERE USER_ID = #{ user.userId } OR USER_ID2 = #{ user.userId }
+	</select>
+
+
+
+
+
+
+	
+	
+	 
+</mapper>
+
+

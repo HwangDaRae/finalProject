@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Report_PushMapper">
+ 	
+ 	
+	<resultMap id="Report_PushSelectMap" 	type="report">
+	<result property="no" 					column="no" 					jdbcType="NUMERIC" />
+	<result property="title" 				column="title" 				jdbcType="VARCHAR" />
+	<result property="content" 				column="content" 			jdbcType="VARCHAR" />
+	<result property="reportSource" 		column="report_source"  	jdbcType="VARCHAR" />
+	<result property="regDate" 				column="report_regdate" 	jdbcType="DATE" />
+	<result property="type"					column="type"		  		 jdbcType="VARCHAR" />
+	<result property="reportCondition" 		column="report_condition"	 jdbcType="VARCHAR" />
+	<result property="reportReason" 		column="report_reason" 		jdbcType="VARCHAR" />
+	<result property="readingStatus"		column="reading_status"		jdbcType="NUMERIC" />
+	
+	<association property="user1" javaType="user">
+		<result property="userId" column="user_id1" jdbcType="VARCHAR"/>
+	</association>
+	
+	<association property="user2" javaType="user">
+		<result property="userId" column="user_id2" jdbcType="VARCHAR"/>
+		<result property="reportCount" column="report_count" jdbcType="NUMERIC"/>
+		<result property="stopStartDate" column="stop_start_date" jdbcType="DATE"/>
+		<result property="stopEndDate" column="stop_end_date" jdbcType="DATE"/>
+		<result property="nickName" column="nickname" jdbcType="VARCHAR" />
+	</association>
+	
+
+	
+	
+	
+<!-- FK들 받아야 됨. ex) 모임게시물  등등 -->	
+	<association property="club" javaType="club">
+		<result property="clubNo"		column="club_no"		jdbcType="NUMERIC" />
+	</association>
+	
+	<association property="clubPost" javaType="clubPost">
+		<result property="clubPostNo" column="club_post_no" jdbcType="NUMERIC"/>
+	</association>
+	
+		
+	<association property="comment" javaType="comment">
+		<result property="clubPostNo" column="club_post_no" jdbcType="NUMERIC"/>
+		<result property="clubPostCommentNo"    column="club_post_comment_no" jdbcType="NUMERIC"/>
+	</association>
+	
+	
+	<association property="feed" javaType="feed">
+		<result property="feedNo" column="feed_no" jdbcType="NUMERIC"/>
+	</association>
+	
+	<association property="feedComment" javaType="comment">
+		<result property="feedNo" column="feed_no" jdbcType="NUMERIC"/>
+		<result property="feedCommentNo" column="feed_comment_no" jdbcType="NUMERIC"/>
+	</association>
+	
+
+
+<!--    라이브와 채팅 안했음	
+	<association property="userId2" javaType="user">
+		<result property="userId" column="user_id2" jdbcType="VARCHAR"/>
+	</association>
+	
+	<association property="userId2" javaType="user">
+		<result property="userId" column="user_id2" jdbcType="VARCHAR"/>
+	</association>
+	
+ -->
+	
+	</resultMap>
+	
+	<!-- SQL : INSERT            ★★★★  라이브, 채팅은 빠져있음.★★★★ -->
+	
+	<insert id="addReport" parameterType="report">
+	INSERT INTO REPORT_PUSH
+	( NO, TITLE, CONTENT, REPORT_SOURCE, CLUB_NO, CLUB_POST_NO, CLUB_POST_COMMENT_NO, FEED_NO, FEED_COMMENT_NO,  USER_ID1,
+	USER_ID2, REPORT_REGDATE, TYPE, REPORT_REASON, REPORT_CONDITION)
+
+	VALUES (seq_report_push_no.nextval,
+			 #{title:VARCHAR},
+			 #{content},
+			 #{reportSource:VARCHAR},
+			 #{club.clubNo:NUMERIC},
+			 #{clubPost.clubPostNo:NUMERIC},
+			 #{comment.clubPostCommentNo:NUMERIC},
+			 #{feed.feedNo:NUMERIC},
+			 #{feedComment.feedCommentNo:NUMERIC}, 
+			 #{user1.userId:VARCHAR},
+			 #{user2.userId:VARCHAR},
+			 SYSDATE,
+			 #{type:VARCHAR},
+			 #{reportReason:VARCHAR},
+		     #{reportCondition:VARCHAR} )
+	
+	</insert>
+	
+	
+	  <!-- SQL : 중복신고 제거 -->
+	  <select id ="getReportDuple2" parameterType ="report" resultType="report">
+		SELECT R.*
+		FROM REPORT_PUSH R
+		WHERE R.USER_ID1 = #{user1.userId} AND R.USER_ID2 = #{user2.userId}
+		AND TO_CHAR(R.REPORT_REGDATE, 'YYYYMMDD') &lt; TO_CHAR(R.REPORT_REGDATE+3, 'YYYYMMDD')
+	  </select>
+	  
+	   <select id ="getReportDuple" parameterType ="report" resultType="report">
+		SELECT R.*
+		FROM REPORT_PUSH R
+		WHERE  R.USER_ID2 = #{user2.userId}
+		AND TO_CHAR(R.REPORT_REGDATE, 'YYYYMMDD') &lt; TO_CHAR(R.REPORT_REGDATE+3, 'YYYYMMDD')
+		 <if test="clubPost.clubPostNo != 0">
+        AND R.CLUB_POST_NO
+        </if>
+        <if test="comment.clubPostCommentNo != 0">
+        AND R.CLUB_POST_COMMENT_NO
+        </if>
+        <if test="feed.feedNo != 0">
+        AND R.FEED_NO
+        </if>
+        <if test="feedComment.feedCommentNo != 0">
+        AND R.FEED_COMMENT_NO
+        </if>
+	  </select>
+	  
+
+
+	 <!-- SQL : SELECT ONE -->
+	 <select id="getReport" parameterType="int" resultMap="Report_PushSelectMap" >
+		SELECT R.*, U.REPORT_COUNT , U.STOP_START_DATE , U.STOP_END_DATE , U.NICKNAME
+        FROM REPORT_PUSH R, USERS U
+        WHERE R.user_id2 = U.USER_ID AND NO = #{no}
+	 </select>
+	 
+	 
+	 <update id ="handleReportCondition" parameterType="report">
+	 UPDATE REPORT_PUSH
+	 <set>
+	 REPORT_CONDITION = 1,
+	 REPORT_REASON = #{reportReason:VARCHAR}
+	 </set>
+	 WHERE NO = #{no}
+	 </update>
+	
+	 
+
+	<!--  SQL : 신고처리 하기 -->
+	<update id="addReportCount" parameterType="report">
+	UPDATE USERS
+	<set>
+	STOP_START_DATE = SYSDATE
+				<if test ="reportReason==1">
+			,	REPORT_COUNT = REPORT_COUNT + 1
+				</if>
+		
+				<if test ="reportReason==2">
+			,	REPORT_COUNT = REPORT_COUNT + 1
+				</if>
+	
+				<if test = "reportReason==3">
+			,	REPORT_COUNT = REPORT_COUNT + 2					
+				</if>
+				
+				<if test = "reportReason==4">
+			,	REPORT_COUNT = REPORT_COUNT + 1
+				</if>
+				
+				<if test = "reportReason==5">
+			,	REPORT_COUNT = REPORT_COUNT + 2
+				</if>
+				
+				<if test = "reportReason==6">
+			,	REPORT_COUNT = REPORT_COUNT + 2
+				</if>
+				
+				<if test = "reportReason==7">
+			,	REPORT_COUNT = REPORT_COUNT + 3
+				</if>
+				
+				<if test = "reportReason>=8">
+			,	PENALTY_TYPE = 2
+				</if>			
+	</set>
+	WHERE USER_ID = #{user2.userId}
+	</update>
+
+	<update id ="stopDate" parameterType="report">
+	UPDATE USERS
+	<set>
+	STOP_START_DATE = SYSDATE
+	<if test = "user2.reportCount>=2">
+
+							<if test ="user2.reportCount==2">
+									,  STOP_END_DATE = TO_CHAR(SYSDATE+1)
+							</if>
+							
+							<if test ="user2.reportCount==3">
+									,  STOP_END_DATE = TO_CHAR(SYSDATE+1)
+							</if>
+							
+							<if test ="user2.reportCount==4">
+									,  STOP_END_DATE = TO_CHAR(SYSDATE+3)
+							</if>
+							
+							<if test ="user2.reportCount==5">
+									,  STOP_END_DATE = TO_CHAR(SYSDATE+3)
+							</if>		
+									
+							<if test ="user2.reportCount==6">
+									,  STOP_END_DATE = TO_CHAR(SYSDATE+7)	
+							</if>
+							
+							<if test ="user2.reportCount==7">
+									,  STOP_END_DATE = TO_CHAR(SYSDATE+7)	
+							</if>
+							<if test ="user2.reportCount>=8">
+									,  STOP_END_DATE = TO_CHAR(SYSDATE+30)
+							</if>
+				,  PENALTY_TYPE = 1
+	</if>
+	
+	</set>
+	WHERE USER_ID = #{user2.userId}
+	</update>
+	
+	<select  id="getReportList"  parameterType="map"	resultMap="Report_PushSelectMap">
+	  	SELECT *
+	  	FROM (	SELECT inner_table.* , ROWNUM AS row_seq
+	  					FROM		(	SELECT R.NO , R.TITLE , R.USER_ID2 , R.REPORT_CONDITION , R.REPORT_REGDATE
+											FROM REPORT_PUSH R
+											WHERE TYPE = 1
+											<if test="userId==''"></if>
+											<if test="search.searchCondition != null">
+													<if test="search.searchCondition == 0 and search.searchKeyword !='' ">
+										 			AND	LOWER(NO) LIKE LOWER('%${search.searchKeyword}%')
+													</if>
+													<if test="search.searchCondition == 1 and search.searchKeyword !='' ">
+										 			AND	LOWER(TITLE) LIKE LOWER('%${search.searchKeyword}%')
+													</if>
+											</if>
+											
+											<if test="userId!=''">
+											AND R.USER_ID1= #{userId}
+											<if test="search.searchCondition != null">
+													<if test="search.searchCondition == 0 and search.searchKeyword !='' ">
+										 			AND	LOWER(NO) LIKE LOWER('%${search.searchKeyword}%')
+													</if>
+													<if test="search.searchCondition == 1 and search.searchKeyword !='' ">
+										 			AND	LOWER(TITLE) LIKE LOWER('%${search.searchKeyword}%')
+													</if>
+											</if>
+											
+											</if>
+											ORDER BY NO DESC) inner_table
+						WHERE ROWNUM &lt;= #{search.endRowNum} )
+		WHERE row_seq BETWEEN #{search.startRowNum} AND #{search.endRowNum} 
+	 </select>
+	 
+	 
+	  <select  id="getTotalCount"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT TITLE , CONTENT , REPORT_REGDATE
+						FROM REPORT_PUSH
+						WHERE TYPE = 1
+						<if test="searchCondition != null">
+								<if test="searchCondition == 0 and searchKeyword !='' ">
+						 		AND	TITLE = #{searchKeyword}
+								</if>
+								<if test="searchCondition == 1 and searchKeyword !='' ">
+						 		AND	CONTENT = #{searchKeyword}
+								</if>
+						</if> ) countTable						
+	 </select>
+	 
+	  <select  id="getTotalCount2"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT R.TITLE , R.CONTENT , R.REPORT_REGDATE
+						FROM REPORT_PUSH R
+						WHERE R.USER_ID1 = #{userId} AND TYPE =1
+						<if test="searchCondition != null">
+								<if test="searchCondition == 0 and searchKeyword !='' ">
+						 		AND	TITLE = #{searchKeyword}
+								</if>
+								<if test="searchCondition == 1 and searchKeyword !='' ">
+						 		AND	CONTENT = #{searchKeyword}
+								</if>
+						</if> ) countTable						
+	 </select>
+	 
+	 
+	 
+	 
+	 
+	 <!--////////// 알림 //////////-->
+	 
+	 <insert id="addPush"				parameterType="report">
+	 	INSERT INTO REPORT_PUSH
+		( NO, TITLE, CONTENT, REPORT_SOURCE, CLUB_NO, CLUB_POST_NO, CLUB_POST_COMMENT_NO, FEED_NO, FEED_COMMENT_NO,  USER_ID1,
+		USER_ID2, REPORT_REGDATE, TYPE, REPORT_REASON, REPORT_CONDITION)
+	
+		VALUES (seq_report_push_no.nextval,
+				 #{title:VARCHAR},
+				 #{content:VARCHAR},
+				 #{reportSource:VARCHAR},
+				 #{club.clubNo:NUMERIC},
+				 #{clubPost.clubPostNo:NUMERIC},
+				 #{comment.clubPostCommentNo:NUMERIC},
+				 #{feed.feedNo:NUMERIC},
+				 #{feedComment.feedCommentNo:NUMERIC}, 
+				 #{user1.userId:VARCHAR},
+				 #{user2.userId:VARCHAR},
+				 SYSDATE,
+				 #{type:VARCHAR},
+				 #{reportReason:VARCHAR},
+			     #{reportCondition:VARCHAR} )
+	 </insert>
+	 
+	 <update id="updatePush">
+	 
+	 </update>
+	 
+	 <select id="getPushList"					parameterType="user"			resultMap="Report_PushSelectMap">
+	
+	 	SELECT
+	 	*
+	 	FROM REPORT_PUSH rp
+	 	<if test="userId != null">
+	 		WHERE TYPE = 2
+	 		AND (rp.user_id1 IN (
+									SELECT
+									recv_user_id AS NAME
+									FROM FOLLOW_BLOCK
+									WHERE send_user_id = #{userId}
+									AND STATE = '1'
+									AND TYPE = '1'	))
+			AND (feed_no IS NOT NULL OR club_post_no is NOT NULL)
+	 	</if>
+	 	
+	 	<if test="userId == null">
+	 		WHERE TYPE = 3
+	 	</if>
+	 	
+	 	ORDER BY NO DESC
+	 	
+	 </select>
+	 
+	 <select id="getPushListTotalCount"			parameterType="user"			resultType="int">
+	
+		SELECT
+		COUNT(*)
+		FROM (
+		 	SELECT
+		 	*
+		 	FROM REPORT_PUSH rp
+		 	<if test="userId != null">
+	 		WHERE TYPE = 2
+	 		AND (rp.user_id1 IN (
+									SELECT
+									recv_user_id AS NAME
+									FROM FOLLOW_BLOCK
+									WHERE send_user_id = #{userId}
+									AND STATE = '1'
+									AND TYPE = '1'	))
+			AND (feed_no IS NOT NULL OR club_post_no is NOT NULL) 
+		 	</if>
+		 	
+		 	<if test="userId == null">
+		 		WHERE TYPE = 3
+		 	</if>					)
+		
+	 </select>
+	 
+	 <select id="getPushListUnReadTotalCount"	parameterType="user"			resultType="int">
+	
+		SELECT
+		COUNT(*)
+		FROM (
+		 	SELECT
+		 	*
+		 	FROM REPORT_PUSH
+		 	<if test="userId != null">
+	 		WHERE TYPE 			= 2
+	 		AND reading_status 	= 0 
+		 	</if>
+		 	
+		 	<if test="userId == null">
+		 		WHERE TYPE = 3
+		 	</if>					)
+		
+	 </select>
+	 
+	 
+	<!--////////// 알림 //////////-->
+	 
+	 
+</mapper>

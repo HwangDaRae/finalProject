@@ -1,0 +1,955 @@
+	
+	/* 댓글 누르기 */
+
+	a.btn_createRecomment {
+		color:red !important;
+	}
+
+	/* 댓글 누르기 */
+
+
+
+
+	/* 상위 PREV 바 수정 */
+
+	.single #post-nav ul {
+		padding: 0 !important;
+	}
+
+	/* 프로필 요약 보기 */
+
+	.ui-dialog-titlebar{
+		border: hidden;
+		background-color: white;
+		display:none;
+	}
+	.ui-dialog-titlebar-close{
+		border: hidden;
+		background-color: white;
+		display:none;
+	}
+
+	div[name='dialog'] > img {
+		border-radius: 15px !important;
+	}
+
+	.ui-widget.ui-widget-content{
+		width:auto !important; 
+		border-radius: 20px;   
+	}
+	.di{
+		border-radius:15px;
+		cursor: pointer;
+	}
+	
+	.ui-dialog-titlebar{
+		border: hidden !important;
+		background-color: white !important;
+		border: none !important;
+		border-radius: 15px !important;
+	}
+
+	.btnSimpleProfileIng{
+	   background-color: #5F0080;
+	   box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px !important;
+	   color: white;
+	}
+
+	.btnSimpleProfileIng:hover{
+	   background-color: white !important;
+	   box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	   color:blueviolet !important;
+	}
+
+	.btnSimpleProfile{
+
+	   background-color: white;
+	   box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	   color:blueviolet;
+	}
+	.btnSimpleProfile:hover{
+	   background-color: #5F0080 !important;
+	   box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px !important;
+	   color: white !important;
+	}
+
+	.dll {
+		cursor: pointer;
+	}
+
+	.dl {
+		cursor: pointer;
+	}
+
+	.yourHome {
+		cursor: pointer;
+	}
+
+	.yourHome2 {
+		cursor: pointer;
+	}
+	
+	/* 프로필 요약 보기 */
+
+
+
+	/* 유저 사진에 마우스 클릭시 이벤트 */
+
+	.dialog {
+		position: fixed;
+	}
+
+
+	/* 유저 사진에 마우스 클릭시 이벤트 */
+	
+	
+
+	/* 사이드바에 있는 팔로우 목록 */
+
+	/* 선택 된 탭 콘텐츠를 표시 */
+
+	h4.yourHome {
+		margin: 0px;
+	}
+
+	h4.yourHome2 {
+		margin: 0px;
+	}
+
+	#all:checked ~ #all_content,
+	#programming:checked ~ #programming_content,
+	#design:checked ~ #design_content {
+	  display: block;
+	}
+	#all-follow:checked ~ #all-follow_content,
+	#programming-follow:checked ~ #programming-follow_content,
+	#design:checked ~ #design_content {
+	  display: block;
+	}
+	
+	.tab{
+		display: block;
+	}
+	
+	/* 탭 전체 스타일 position: fixed; */
+	.tabs1 {
+		position: fixed;
+		width:200px;
+		margin-bottom: 100px;
+		background-color: #ffffff;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+		display:inline-block;
+		height:500px;
+		border-radius: 15px;
+	}
+		
+	
+	/* 탭 스타일 */
+	.tab_item1 {
+		width: calc(100%/3);
+		height: 50px;
+		border-bottom: 3px solid #333333;
+		background-color: #f8f8f8;
+		line-height: 50px;
+		font-size: 14px;
+		text-align: center;
+		color: #333333;
+		display: block;
+		float: left;
+		width:400px;
+		text-align: center;
+		font-weight: bold;
+		transition: all 0.2s ease;
+	}
+	.tab_item-following {
+		width: 100px !important;
+		height: 50px;
+		background-color: #F5F6F7;
+		border-bottom: 3px solid #EBEDF0;
+		line-height: 50px;
+		font-size: 14px;
+		text-align: center;
+		color: #333333;
+		display: inline-block;
+		width:200px;
+		text-align: center;
+		font-weight: bold;
+		transition: all 0.2s ease;
+		border-radius: 0px 15px 0px 0px ;
+	}
+	.tab_item-follow {
+		width: 100px !important;
+		height: 50px;
+		background-color: #F5F6F7;
+		border-bottom: 3px solid #EBEDF0;
+		line-height: 50px;
+		font-size: 14px;
+		text-align: center;
+		color: #333333;
+		display: block;
+		float: left;
+		width:200px;
+		text-align: center;
+		font-weight: bold;
+		transition: all 0.2s ease;
+		border-radius: 15px 0px 0px 0px ;
+	}
+	
+	.tab_item2 {
+		width: calc(100%/3);
+		height: 50px;
+		border-bottom: 3px solid #333333;
+		background-color: #f8f8f8;
+		line-height: 50px;
+		font-size: 14px;
+		text-align: center;
+		color: #333333;
+		display: inline-block;
+		width:400px;
+		text-align: center;
+		font-weight: bold;
+		transition: all 0.2s ease;
+	}
+	
+	.tab_item1:hover {
+		opacity: 0.75;
+	}
+	.tab_item2:hover {
+		opacity: 0.75;
+	}
+	
+	/* 라디오 버튼 UI삭제*/
+	input[name="tab_item"] {
+		display: none;
+	}
+	input[name="tab_item-follow"] {
+		display: none;
+	}
+	
+	/* 탭 컨텐츠 스타일 */
+	.tab_content {
+		position: fixed;
+		display: none;
+		height: 400px;
+		clear: both;
+		overflow: hidden;
+		overflow-y: auto;
+		scrollbar-width: none;
+		width: inherit;
+		font-size: 0.9rem;
+	}
+	.tab_content-follow {
+		position: fixed;
+		display: none;
+		height: 400px;
+		clear: both;
+		overflow: hidden;
+		overflow-y: auto;
+		scrollbar-width: none;
+		width: inherit;
+		font-size: 0.9rem;
+	}
+	
+	/* 스크롤바 안보이기 */
+	
+	.tab_content::-webkit-scrollbar {
+	    display: none; /* Chrome, Safari, Opera*/
+	}
+	
+	.tab_content-follow::-webkit-scrollbar {
+	    display: none; /* Chrome, Safari, Opera*/
+	}
+	
+	#fll {
+	    display: contents;
+	}
+	
+	#fl {
+	    display: contents;
+	}
+
+	.follow-section {
+		margin: 0px;
+	    display: flex;
+	    justify-content: space-between !important;
+	    align-items: center;
+		margin-bottom: 20px;
+		margin-left: 10px;
+    	margin-right: 10px;
+	}
+	
+	.following-section {
+		margin: 0px;
+	    display: flex;
+	    justify-content: space-between !important;
+	    align-items: center;
+		margin-bottom: 20px;
+		margin-left: 10px;
+    	margin-right: 10px;
+	}
+
+	.follow-section img {
+		border-radius: 15px;
+		margin-right: 10px;
+	}
+
+	.following-section img {
+		border-radius: 15px;
+		margin-right: 10px;
+	}
+
+	label.tab_item-follow:hover {
+		background-color: #5F0080 !important;
+		color: white !important;
+	}
+
+	label.tab_item-follow:checked {color: red;}
+	
+	label.tab_item-following:hover {
+		background-color: #5F0080 !important;
+		color: white !important;
+	}
+
+	label.tab_item-following:checked {color: red;}
+
+
+
+	/* 사이드바에 있는 팔로우 목록 */	
+
+
+	/* BACKGROUND */
+
+	html {
+		background-color: white !important;
+	}
+
+	#main {
+		background-color: white !important;
+	}
+
+	/* BACKGROUND */
+	
+	
+
+	/* 스크롤바 안보이지만 동작 */
+
+	html {
+		-ms-overflow-style:none !important; 
+	}
+
+	html::-webkit-scrollbar {
+		display:none !important;
+	}
+
+	/* 스크롤바 안보이지만 동작 */
+
+
+
+	/* PREV */
+
+	#prev-items .label {
+		color: grey;
+	}
+	
+	/* PREV */
+	
+	/* 화면 조정 */
+
+	@-ms-viewport {
+		width: device-width;
+	}
+
+	/* 화면 조정 */
+
+	/* 툴바 프레임 워크 충돌로 인한 조정 */
+
+	div.row {
+		margin-left: 0px !important;
+	}
+
+	/* 툴바 프레임 워크 충돌로 인한 조정 */
+
+
+	.row {
+
+		margin-left:0px !important;
+	}
+
+	/* FEED IMAGE */
+
+	.carousel-control.left, .carousel-control.right {
+    	background-image: none !important;
+	}
+	
+	/* FEED IMAGE */
+
+	/* FEED LASTBAR */
+	
+	section .row {
+		margin-top: 0px;
+		margin-right: 0px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	
+	/* FEED LASTBAR */
+
+	/* REPORT ICON */
+	
+	div.report {
+		margin-top:3px !important;
+		font-size: 1.3rem !important;
+	}
+	
+	/* REPORT ICON */
+
+	/* 주변검색 */
+
+	.searchPlace {
+		width: -webkit-fill-available;
+		position: inherit;
+		background-color: white !important;
+		color: #5F0080 !important;
+		box-shadow: rgb(0 0 0 / 30%) 0px 19px 38px, rgb(0 0 0 / 22%) 0px 15px 12px;
+		border: none !important;
+		font-weight: 700 !important;
+		margin-bottom: 25px !important;
+	}
+
+	.searchPlace:hover{
+		background-color: #5F0080 !important;
+		color: white !important;
+	}
+
+	/* 주변 검색 */
+
+	/* FEED LIKE & DISLIKE ICON & COMMET ICON */
+
+	.updateCommentView {
+		cursor: pointer;
+	}
+
+	.deleteComment {
+		cursor: pointer;
+	}
+
+	.commentReport {
+		cursor: pointer;
+	}
+	
+	.feedLike {
+		width:25px !important;
+		height:25px !important;
+	}
+
+	.feedLike:hover {
+		transform: scale(1.4);
+		transition: transform .5s;
+		cursor: pointer;
+	}
+
+	.feedDislike {
+		width:25px !important;
+		height:25px !important;
+	}
+
+	.feedDislike:hover {
+		transform: scale(1.4);
+		transition: transform .5s; 
+		cursor: pointer;
+	}
+
+	.comment > img {
+		width:25px !important;
+	}
+
+	.comment > img:hover {
+		transform: scale(1.4);
+		transition: transform .5s; 
+		cursor: pointer;
+	}
+
+	.likeCount {
+		text-align: center !important;
+	}
+
+	.commentCount {
+		text-align: center !important;
+	}
+
+	.col-xs-2 {
+		text-align: center !important;
+	}
+
+	.report > img {
+		width:25px !important;
+		height:25px !important;
+	}
+
+	.report > img:hover {
+		transform: scale(1.4);
+		transition: transform .5s; 
+		cursor: pointer;
+	}
+
+	.addCommentHeart:hover {
+		transform: scale(1.4);
+		transition: transform .5s; 
+		cursor: pointer;
+	}
+
+	.deleteCommentHeart:hover {
+		transform: scale(1.4);
+		transition: transform .5s; 
+		cursor: pointer;
+	}
+
+	/* FEED LIKE & DISLIKE ICON & COMMET ICON */
+
+	/* 댓글창 CSS */
+
+	textarea[name='mainCommentContent'] {
+		resize: none;
+		display: flex !important;
+		width: 80% !important;
+		height: 90px !important;
+	}
+
+	textarea[name='commentContent'] {
+		resize: none;
+		display: flex !important;
+		width: 90% !important;
+		height: 90px !important;
+	}
+
+	/* 댓글창 CSS */
+
+	/* TEST */
+
+	div.six {
+		border-radius: 15px;
+		box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+		background-color: white;
+	}
+
+	/* TEST */
+
+	/* FEED CONTENT FONT COLOR */
+
+	div.feedContent {
+		margin-top: 10px;
+		margin-left: 70px;
+		margin-right: 25px;
+		color: black !important;
+		font-size: 1rem;
+	}
+
+	/* FEED CONTENT FONT COLOR */
+
+	/* 댓글의 좋아요 사진 사이즈 */
+
+	.addCommentHeart {
+		width: 20px;
+		height: 20px;
+		margin-top: 0px;
+	}
+
+	.deleteCommentHeart {
+		width: 20px;
+		height: 20px;
+		margin-top: 0px;
+	}
+
+	/* 댓글의 좋아요 사진 사이즈 */
+
+	/* 대댓글 관련 hidden */
+
+	button.btn_addRecomment {
+		background-color: white !important;
+		color: #5F0080 !important;
+		box-shadow: rgb(0 0 0 / 22%) 0px 15px 12px;
+		border: none !important;
+		font-weight: 700 !important;
+		border-radius: 15px;
+		height: 25px;
+		float: right;
+		margin-right: 35px;
+	}
+
+	button.btn_addRecomment:hover{
+		background-color: #5F0080 !important;
+		color: white !important;
+	}
+	
+
+	/* 대댓글 관련 hidden */
+
+	/* 댓글 작성란 줄이기 */
+
+	#feedInfo {
+		text-align: -webkit-center;
+    	margin-top: 50px;
+	}
+
+
+	/* 댓글 작성란 줄이기 */
+
+	.heartPosition {
+	    display: flex;
+		float:right;
+	}
+
+	.heartCountPosition {
+		display: flex;
+		float:right;
+	}
+
+
+	/* 사진 모서리 둥글게 */
+
+	.carousel-inner > .item > img {
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 350px !important;
+		object-fit: scale-down;
+		border-radius: 30px;
+	}
+
+	/* 사진 모서리 둥글게 */
+
+	/* 해시 태그 */
+
+	.hashtagContent {
+		margin-right: 25px;
+		margin-bottom: 25px;
+		margin-left: 70px;
+		border: 1px #bd76ff solid;
+		border-radius: inherit;
+		font-size: 1rem;
+	}
+
+	/* 해시 태그 */
+
+
+	/* 하단 바 중앙 정렬 */
+
+	.col-xs-2 {
+		text-align: center !important;
+		display: flex;
+		justify-content: center;
+	}
+
+	/* 하단 바 중앙 정렬 */
+
+	/* 피드 상단 쪽 */
+
+	.feedHeader {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.feedLeft {
+		display: flex;
+		align-items: center;
+	}
+
+	.feedInner {
+		display: flex;
+    	align-items: center;
+	}
+
+	.feedCover {
+		display: flex;
+		margin: 10px;
+		width: 50px;
+		height: 50px;
+	}
+
+	.feedProfileImage {
+		border-radius: 25% !important;
+		cursor: pointer;
+		width: 50px;
+	}
+
+	.feedDate {
+		margin: 10px;
+		font-size: 0.778rem;
+		font-weight: 700 !important;
+	}
+
+	.feedName {
+		font-weight: 700 !important;
+		cursor: pointer;
+	}
+
+	.udIcon {
+		margin: 10px;
+		cursor: pointer;
+	}
+
+	/* 피드 상단 쪽 */
+
+
+	/* FEEDCOMMENT ADD BUTTON */
+	
+	button.btn_addComment {
+		background-color: white !important;
+		color: #5F0080 !important;
+		box-shadow: rgb(0 0 0 / 22%) 0px 15px 12px;
+		border: none !important;
+		font-weight: 700 !important;
+		border-radius: 15px;
+		height: 25px;
+		float: right;
+		margin-right: 50px;
+	}
+
+	button.btn_addComment:hover{
+		background-color: #5F0080 !important;
+		color: white !important;
+	}
+	
+	/* FEED ADD BUTTON */
+
+	/* FEED LASTBAR */
+	
+	section .row {
+		margin-top: 10px;
+		margin-bottom: 10px;
+		margin-right: 0px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: 15px;
+		background-color: white !important;
+	}
+
+	/* 하단 바 숫자 */
+
+	.col-xs-1 {
+		font-size: 15px;
+		padding-right: 0px !important;
+		padding-left: 0px !important;
+	}
+
+	/* 하단 바 숫자 */
+	
+	/* FEED LASTBAR */
+
+	/* 댓글 사진 혹은 이름 호버시 */
+
+	.comment-author img {
+		cursor: pointer;
+	}
+
+	cite {
+		cursor: pointer;
+	}
+
+	/* 댓글 사진 혹은 이름 호버시 */
+
+	/* 댓글 수정 관련 버튼 */
+
+	button.updateFeedComment {
+		background-color: white !important;
+		color: #5F0080 !important;
+		box-shadow: rgb(0 0 0 / 22%) 0px 15px 12px;
+		border: none !important;
+		font-weight: 700 !important;
+		border-radius: 15px;
+		height: 25px;
+		float: right;
+	}
+
+	button.updateFeedComment:hover{
+		background-color: #5F0080 !important;
+		color: white !important;
+	}
+
+	button.cancel {
+		background-color: white !important;
+		color: #5F0080 !important;
+		box-shadow: rgb(0 0 0 / 22%) 0px 15px 12px;
+		border: none !important;
+		font-weight: 700 !important;
+		border-radius: 15px;
+		height: 25px;
+		float: right;
+	}
+
+	button.cancel:hover{
+		background-color: #5F0080 !important;
+		color: white !important;
+	}
+
+	/* 댓글 수정 관련 버튼 */
+
+	/* 모달창 피드 수정 */
+
+	.note-editable {
+		height: 400px !important;
+	}
+
+	button.btn_updateFeedCancel {
+		background-color: white !important;
+		color: #5F0080 !important;
+		box-shadow: rgb(0 0 0 / 22%) 0px 15px 12px;
+		border: none !important;
+		font-weight: 700 !important;
+		border-radius: 15px;
+		height: 25px;
+		float: right;
+	}
+
+	button.btn_updateFeedCancel:hover{
+		background-color: #5F0080 !important;
+		color: white !important;
+	}
+
+	button.btn_updateFeed {
+		background-color: white !important;
+		color: #5F0080 !important;
+		box-shadow: rgb(0 0 0 / 22%) 0px 15px 12px;
+		border: none !important;
+		font-weight: 700 !important;
+		border-radius: 15px;
+		height: 25px;
+		float: right;
+	}
+
+	button.btn_updateFeed:hover{
+		background-color: #5F0080 !important;
+		color: white !important;
+	}
+
+	.updateModalLeft {
+		display: flex;
+		align-items: center;
+	}
+
+	.updateModalInner {
+		display: flex;
+		align-items: center;
+	}
+
+	.updateModalInner img {
+		width: 50px
+	}
+
+	.updateCover {
+		display: flex;
+		margin: 10px;
+		width: 50px;
+		height: 50px;
+	}
+
+	.modal-dialog {
+		top : 100px;
+	}
+
+	.updateFormName {
+		font-weight: 700 !important;
+		cursor: pointer;
+	}
+
+	.updateFeedDate {
+		margin: 10px;
+    	font-size: 0.778rem;
+    	font-weight: 700 !important;
+	}
+
+	.updateFeedProfileImage{
+		border-radius: 25% !important;
+		cursor: pointer;
+	}
+
+	/* 모달창 피드 수정 */
+
+	/* 신고 모달 관련 */
+
+	.btn-13 {
+ 		background-color: white !important;
+		color: #5F0080 !important;
+		box-shadow: rgb(0 0 0 / 30%) 0px 19px 38px, rgb(0 0 0 / 22%) 0px 15px 12px;
+		border: none !important;
+		font-weight: 700 !important;
+		border-radius: 15px;
+		height: 25px;
+	}
+
+	.btn-13:hover{
+		background-color: #5F0080 !important;
+		color: white !important
+		
+	}
+
+	#reportModal .form-horizontal {
+		margin: 30px;
+	}
+
+	#reportModal {
+		font-size: 1rem;
+	}
+
+	.reportSourceDiv {
+		display: flex;
+		justify-content: space-evenly;
+		align-items: center;
+	}
+
+	.reportSourceDivId {
+		margin-top: 15px;
+		margin-bottom: 15px;
+		width: 100px !important;
+	}
+
+	.reportSourceDivSource {
+		margin-top: 15px;
+		margin-bottom: 15px;
+		width: 100px !important;
+	}
+
+	.reportTitleTitle {
+		display: flex;
+		justify-content: center;
+		font-weight: 700 !important;
+	}
+
+	.reportTitle {
+		display: flex;
+		justify-content: center;
+	}
+
+	.reportContentTitle {
+		display: flex;
+		justify-content: center;
+		font-weight: 700 !important;
+	}
+
+	.reportContent {
+		display: flex;
+		justify-content: center;
+	}
+
+	.reportModalReason {
+		display: flex;
+		justify-content: space-evenly;
+	}
+
+	#title {
+		height: 50px;
+		width: 100%;
+		resize: none;
+	}
+
+	#content {
+		resize: none;
+		width: 100%;
+	}
+
+
+	/* 신고 모달 관련 */
+
+

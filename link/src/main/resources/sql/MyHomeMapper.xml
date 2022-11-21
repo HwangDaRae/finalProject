@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MyHomeMapper">
+
+
+
+	<resultMap id="myHomeSelectMap" type="user">
+		<result property="userId" column="send_user_id"
+			jdbcType="VARCHAR" />
+		<result property="receiveId.userId" column="recv_user_id"
+			jdbcType="VARCHAR" />
+		<result property="fbState" column="state" jdbcType="CHAR" />
+		<result property="fbType" column="type" jdbcType="CHAR" />
+		<result property="nickName" column="nickname"
+			jdbcType="VARCHAR" />
+		<result property="profileImage" column="profile_image"
+			jdbcType="VARCHAR" />
+		<result property="receiveId.profileImage"
+			column="profile_image" jdbcType="VARCHAR" />
+		<result property="receiveId.nickName" column="nickname"
+			jdbcType="VARCHAR" />
+		<result property="receiveId.fbState" column="state"
+			jdbcType="CHAR" />
+		<result property="receiveId.fbType" column="type"
+			jdbcType="CHAR" />
+	</resultMap>
+
+
+
+
+	<insert id="addFollow" parameterType="user">
+
+		INSERT
+		INTO follow_block (
+		no ,
+		send_user_id ,
+		recv_user_id ,
+		state ,
+		type
+		)
+		VALUES (
+		seq_follow_block_no.nextval ,
+		#{userId:VARCHAR} ,
+		#{receiveId.userId:VARCHAR} ,
+		#{fbState:CHAR} ,
+		#{fbType:CHAR}
+
+		)
+
+	</insert>
+
+
+
+
+
+	<select id="getFollow" parameterType="User"
+		resultMap="myHomeSelectMap">
+			SELECT
+			f.send_user_Id ,
+			f.recv_user_id,
+			f.state,
+			f.type,
+			u.nickname , 
+			u.profile_image
+	
+			FROM users u, follow_block f
+	
+			<where>
+				u.user_id = f.recv_user_id
+				<if test="(userId !=null and receiveId.userId != null) and (fbType == 2)">
+					and f.send_user_id = #{userId} and f.recv_user_id
+					=#{receiveId.userId} and TRIM(f.type) = #{fbType}
+				</if> 
+				<if test="(userId !=null and receiveId.userId != null) and (fbType == 1)">
+					and f.send_user_id = #{userId} and f.recv_user_id
+					=#{receiveId.userId} and TRIM(f.type) = #{fbType}
+				</if> 
+				<if test="(userId !=null and receiveId.userId != null) and (fbType == null)">
+					and f.send_user_id = #{userId} and f.recv_user_id
+					=#{receiveId.userId} 
+				</if>
+			</where>
+	</select>
+
+	<select id="getFollowList" parameterType="search"
+		resultMap="myHomeSelectMap">
+		SELECT
+		inner_table.*
+		FROM (
+		SELECT
+		rownum AS row_seq ,
+		deep_table.*
+		FROM (
+		SELECT
+		f.send_user_Id ,
+		f.recv_user_id,
+		f.state,
+		f.type,
+		u.nickname ,
+		u.profile_image
+
+
+
+
+		FROM users u, follow_block f
+
+		<where>
+			u.user_id = f.recv_user_id
+			<if test="searchKeyword !=null ">
+				and f.send_user_id = #{searchKeyword} and f.type='1' and f.state='1'
+			</if>
+		
+		</where>
+
+
+		) deep_table
+		<!-- WHERE ROWNUM &lt;= #{endRowNum} -->
+		) inner_table
+		<!-- WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum} -->
+
+	</select>
+
+	<select id="getFollowerList" parameterType="search"
+		resultMap="myHomeSelectMap">
+		SELECT
+		inner_table.*
+		FROM (
+		SELECT
+		rownum AS row_seq ,
+		deep_table.*
+		FROM (
+		SELECT
+		f.send_user_Id ,
+		f.recv_user_id,
+		f.state,
+		f.type,
+		u.nickname ,
+		u.profile_image
+
+
+
+
+		FROM users u, follow_block f
+
+		<where>
+			u.user_id = f.send_user_id
+			
+			<if test="searchKeyword !=null ">
+				and f.recv_user_id = #{searchKeyword} and f.type='1' and f.state='1'
+			</if>
+		</where>
+
+
+		) deep_table
+		<!-- WHERE ROWNUM &lt;= #{endRowNum} -->
+		) inner_table
+		<!-- WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum} -->
+
+	</select>
+
+	<update id="updateFollow" parameterType="user">
+
+		UPDATE follow_block
+		<set>
+			state = #{fbState:CHAR} ,
+			type = #{fbType:CHAR}
+
+		</set>
+		<where>
+		<if test="(userId !=null and receiveId.userId != null) and (fbType == 2)">
+		 send_user_id = #{userId} and recv_user_id = #{receiveId.userId} and TRIM(type) = '2'
+		 </if>
+		 <if test="(userId !=null and receiveId.userId != null) and (fbType == 1)">
+		 send_user_id = #{userId} and recv_user_id = #{receiveId.userId} and TRIM(type) = '1'
+		 </if>
+        </where>
+	</update>
+	
+	<select id="getBlockList" parameterType="search"
+		resultMap="myHomeSelectMap">
+		SELECT
+		inner_table.*
+		FROM (
+		SELECT
+		rownum AS row_seq ,
+		deep_table.*
+		FROM (
+		SELECT
+		f.send_user_Id ,
+		f.recv_user_id,
+		f.state,
+		f.type,
+		u.nickname ,
+		u.profile_image
+
+
+
+
+		FROM users u, follow_block f
+
+		<where>
+			u.user_id = f.recv_user_id
+			<if test="searchKeyword !=null ">
+				and f.send_user_id = #{searchKeyword} and f.type='2' and f.state='1'
+			</if>
+		
+		</where>
+
+
+		) deep_table
+		<!-- WHERE ROWNUM &lt;= #{endRowNum} -->
+		) inner_table
+		<!-- WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum} -->
+
+	</select>
+	
+
+
+
+
+</mapper>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QandAMapper">
+
+
+	<resultMap id="qandASelectMap" type="qanda">
+		<result property="qandANo" 				column="qanda_no" 		      jdbcType="NUMERIC" />
+		<result property="qandATitle"			column="qanda_title"		  jdbcType="VARCHAR" />
+		<result property="qandAContent" 		column="qanda_content" 		  jdbcType="VARCHAR" />
+		<result property="qandARegDate"			column="qanda_regdate" 		  jdbcType="DATE" />
+		<result property="qandAImage1" 			column="qanda_image1" 		  jdbcType="VARCHAR" />
+		<result property="qandAImage2" 			column="qanda_image2" 		  jdbcType="VARCHAR" />
+		<result property="qandAAnswerContent" 	column="answer_content" 	  jdbcType="VARCHAR" />
+		<result property="qandAAnswerRegDate" 	column="answer_regdate" 	  jdbcType="DATE" />
+		<result property="qandACondition" 		column="answer_condition" 	  jdbcType="VARCHAR" />
+		<result property="qandAOpenCondition" 	column="qanda_open_condition" jdbcType="VARCHAR" />
+	
+
+
+	<association property="userId" javaType="user">
+		<result property="userId" column="user_id" jdbcType="VARCHAR"/>
+		<result property="nickName" column="nickname" jdbcType="VARCHAR" />
+	</association>
+		
+	</resultMap>
+
+
+
+
+	<!-- SQL : INSERT -->
+	<insert id="addQandA" parameterType="qandA" >
+		INSERT INTO QANDA
+		( QANDA_NO, QANDA_TITLE, QANDA_CONTENT, QANDA_REGDATE, QANDA_IMAGE1,
+		QANDA_IMAGE2, ANSWER_CONTENT, ANSWER_REGDATE, ANSWER_CONDITION, QANDA_OPEN_CONDITION, USER_ID)
+		
+		VALUES (SEQ_QANDA_NO.NEXTVAL, 
+				#{qandATitle:VARCHAR}, 
+				#{qandAContent:VARCHAR},
+				SYSDATE,
+				#{qandAImage1:VARCHAR},
+				#{qandAImage2:VARCHAR}, 
+				#{qandAAnswerContent:VARCHAR},
+				#{qandAAnswerRegDate:DATE},
+				'0',
+				#{qandAOpenCondition}, 
+				#{userId.userId:VARCHAR} )
+		
+	</insert>
+
+	<!-- SQL : SELECT ONE -->
+	<select id="getQandA" parameterType="int" resultMap="qandASelectMap">
+		SELECT
+		Q.QANDA_NO, Q.QANDA_TITLE, Q.QANDA_CONTENT, Q.QANDA_REGDATE, Q.QANDA_IMAGE1,
+		Q.QANDA_IMAGE2, Q.ANSWER_CONTENT,
+		Q.ANSWER_REGDATE, Q.ANSWER_CONDITION, Q.QANDA_OPEN_CONDITION, U.USER_ID, U.NICKNAME
+		FROM QANDA Q , USERS U
+		WHERE Q.QANDA_NO = #{QANDA_NO} AND Q.USER_ID = U.USER_ID
+
+	</select>
+
+
+
+
+	<!-- SQL : UPDATE 관리자와 유저 어떻게 나눌지 -->
+	<update id="updateQandA" parameterType="qandA">
+		UPDATE QANDA
+		<set>
+		QANDA_TITLE = #{qandATitle},
+		QANDA_CONTENT= #{qandAContent},
+		<if test="userId.userId != 'admin01'">
+		QANDA_REGDATE = SYSDATE,
+		</if>
+		QANDA_IMAGE1 = #{qandAImage1:VARCHAR},
+		QANDA_IMAGE2 = #{qandAImage2:VARCHAR},
+		QANDA_OPEN_CONDITION= #{qandAOpenCondition:VARCHAR}
+		<if test="userId.userId == 'admin01'">
+			,	ANSWER_CONTENT = #{qandAAnswerContent},
+	 			ANSWER_REGDATE = SYSDATE,
+	 			ANSWER_CONDITION = '1'
+		</if>
+		</set>
+		WHERE QANDA_NO = #{qandANo}
+	</update>
+	
+	
+	
+
+
+	<!-- SQL : DELETE -->
+
+	<delete id="deleteQandA" parameterType="int">
+		DELETE
+		FROM QANDA
+		WHERE QANDA_NO = #{qanda_no}
+
+	</delete>
+
+		<!-- SQL : SELECT LIST -->
+	<select  id="getQandAList"  parameterType="map"	resultMap="qandASelectMap">
+	  	SELECT *
+	  	FROM (	SELECT inner_table.* , ROWNUM AS row_seq
+	  					FROM		(	SELECT Q.QANDA_NO , Q.QANDA_TITLE , Q.ANSWER_CONDITION , U.USER_ID , U.NICKNAME, Q.QANDA_REGDATE, Q.QANDA_IMAGE1, 
+	  					                Q.QANDA_IMAGE2, Q.QANDA_OPEN_CONDITION
+											FROM QANDA Q, USERS U
+											<if test ="search.order==3">
+											WHERE Q.USER_ID = #{search.userId} AND Q.USER_ID = U.USER_ID
+											<if test="search.searchCondition != null">
+													<if test="search.searchCondition == 0 and search.searchKeyword !='' ">
+										 			AND	LOWER(QANDA_NO) LIKE LOWER('%${search.searchKeyword}%')
+													</if>
+													<if test="search.searchCondition == 1 and search.searchKeyword !='' ">
+										 			AND	LOWER(QANDA_TITLE) LIKE LOWER('%${search.searchKeyword}%')
+													</if> 		
+											</if>	
+											</if>
+											<if test ="search.order==2">
+											WHERE Q.USER_ID = U.USER_ID 
+											<if test="search.searchCondition != null">
+													<if test="search.searchCondition == 0 and search.searchKeyword !='' ">
+										 			AND	LOWER(QANDA_NO) LIKE LOWER('%${search.searchKeyword}%')
+													</if>
+													<if test="search.searchCondition == 1 and search.searchKeyword !='' ">
+										 			AND	LOWER(QANDA_TITLE) LIKE LOWER('%${search.searchKeyword}%')
+													</if>
+											</if>
+											</if>
+											ORDER BY QANDA_NO DESC) inner_table
+						WHERE ROWNUM &lt;= #{search.endRowNum} )
+		WHERE row_seq BETWEEN #{search.startRowNum} AND #{search.endRowNum} 
+	 </select>
+	 
+	 
+	 
+	 <!-- SQL : SELECT ROW Count -->	 
+	 <select  id="getTotalCount"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT QANDA_TITLE , QANDA_CONTENT , QANDA_REGDATE
+						FROM QANDA
+						<if test="searchCondition != null">
+							<where>
+								<if test="searchCondition == 0 and searchKeyword !='' ">
+						 		QANDA_NO = #{searchKeyword}
+								</if>
+								<if test="searchCondition == 1 and searchKeyword !='' ">
+						 		QANDA_TITLE LIKE '%${searchKeyword}%'
+								</if>
+							</where>
+						</if> ) countTable						
+	 </select>
+	 
+		 <select  id="getTotalCount2"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT Q.QANDA_TITLE , Q.QANDA_CONTENT , Q.QANDA_REGDATE
+						FROM QANDA Q, USERS U
+						WHERE Q.USER_ID = #{userId} AND Q.USER_ID = U.USER_ID
+						<if test="searchCondition != null">
+							<where>
+								<if test="searchCondition == 0 and searchKeyword !='' ">
+						 		AND	QANDA_NO = #{searchKeyword}
+								</if>
+								<if test="searchCondition == 1 and searchKeyword !='' ">
+						 		AND QANDA_TITLE LIKE '%${searchKeyword}%'
+								</if>
+							</where>
+						</if> ) countTable						
+	 </select>
+
+</mapper>

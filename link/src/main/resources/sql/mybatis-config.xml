@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE configuration
+ 		 PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+ 		"http://mybatis.org/dtd/mybatis-3-config.dtd">
+  						
+<!--	mybatis-config.xml :: MyBatis Framework  MetaData -->
+<configuration>
+
+	<!-- 기타 설정정보 :: [MyBatis_Home]/mybatis-3.2.1.pdf 참조 -->
+	<settings>
+		<setting name="callSettersOnNulls" value="false"/>
+	</settings>	
+	
+	<!-- FQCN(Full Qualified Class Name) Alias(별칭관리) -->
+	<typeAliases>
+		<typeAlias alias="search" type="com.link.common.Search" />
+		<typeAlias alias="user" type="com.link.service.domain.User" />
+		<typeAlias alias="feed" type="com.link.service.domain.Feed" />
+		<typeAlias alias="club" type="com.link.service.domain.Club" />
+		<typeAlias alias="clubPost" type="com.link.service.domain.ClubPost" />
+		<typeAlias alias="notice" type="com.link.service.domain.Notice" />
+		<typeAlias alias="Report" type="com.link.service.domain.Report" />
+		<typeAlias alias="QandA" type="com.link.service.domain.QandA" />
+		<typeAlias alias="pay" type="com.link.service.domain.Pay" />
+		<typeAlias alias="meeting" type="com.link.service.domain.Meeting" />
+		<typeAlias alias="comment" type="com.link.service.domain.Comment" />
+		<typeAlias alias="clubUser" type="com.link.service.domain.ClubUser" />
+		<typeAlias alias="heart" type="com.link.service.domain.Heart" />
+		<typeAlias alias="participant" type="com.link.service.domain.Participant"/>
+		<typeAlias alias="live" type="com.link.service.domain.Live"/>
+	</typeAliases>
+	
+	 <!-- SQL Definition :: file include -->
+	<mappers>
+		<mapper resource="sql/UserMapper.xml"/> 
+		<mapper resource="sql/FeedMapper.xml"/>
+		<mapper resource="sql/ClubMapper.xml"/>
+		<mapper resource="sql/ClubPostCommentMapper.xml"/>
+		<mapper resource="sql/ClubPostMapper.xml"/>
+		<mapper resource="sql/NoticeMapper.xml"/>
+		<mapper resource="sql/QandAMapper.xml"/>
+		<mapper resource="sql/Report_PushMapper.xml"/>
+		<mapper resource="sql/HeartMapper.xml"/>
+		<mapper resource="sql/MyHomeMapper.xml"/>
+		<mapper resource="sql/LiveMapper.xml"/>
+	</mappers>
+
+</configuration>

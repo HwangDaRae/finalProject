@@ -1,0 +1,188 @@
+
+
+
+/* 채팅 css */
+/* 채팅 아이콘 css*/
+#chat-icon{
+	position: fixed; bottom: 0; right: 0; margin-right: 50px; margin-bottom: 50px; padding: 0px; width: 100px; height: 100px; border-radius: 50px;
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px; z-index: 100 !important;
+}
+/* 채팅 아이콘에 마우스 올렸을 때 */
+#chat-icon:hover{
+	position: fixed; bottom: 0; right: 0; margin-right: 50px; margin-bottom: 50px; padding: 0px; width: 100px; height: 100px; border-radius: 50px;
+	box-shadow: rgba(102, 051, 102, 0.7) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px; z-index: 100 !important;
+}
+
+
+
+
+/* 채팅 div css */
+#allChat{
+	background-color: white;
+	z-index: 100;
+}
+
+/* 채팅 툴바 css */
+#allChat-toolbar{
+	margin-left: 10px;
+	margin-right: 10px;
+	display: grid;
+	grid-template-columns: 2fr 5fr 1fr;
+}
+
+/* 채팅 툴바 LINK 로고 css */
+#allChat-toobar-title{
+	font-size: 30px;
+	font-family: fantasy;
+}
+
+/* 채팅 툴바에 닫기 이미지 */
+#allChat-toolbar-close{
+	float: right;
+	font-size: 30px;
+	font-family: sans-serif;
+}
+
+/* 채팅 툴바에 닫기 이미지에 마우스 올렸을 때 */
+#allChat-toolbar-close:hover{
+	cursor: pointer;
+}
+
+
+
+
+/* 채팅 바디 css */
+#chat-body{
+	background-color: #f7eef9;
+	border-radius: 10px;
+}
+
+/* 채팅 sidebar와 채팅리스트 div의 css */
+#chat-list-content{
+	padding-left: 10px;
+	padding-top: 10px;
+	display: grid;
+	grid-template-columns: 1fr 4fr;
+	height: 600px;
+}
+
+#chat-body-sidebar{
+	/* background-color: red; */
+}
+
+/* 모임채팅 이미지와 1:1 채팅 이미지의 공통 class */
+.chat-img-sidebar{
+	border-radius: 100px;
+	margin-top: 10px;
+}
+
+/* 모임채팅 이미지와 1:1 채팅 이미지의 공통 hover 이벤트 */
+.chat-img-sidebar:hover{
+	border-radius: 100px;
+	margin-top: 10px;
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 9px 38px, rgba(95, 0, 128, 0.3) 0px 5px 12px;
+}
+
+/* 모임 채팅과 1:1 채팅 리스트 */
+#chat-list-one-content{
+	height: 600px;
+	overflow: auto;
+	margin-right: 10px;
+}
+
+/* 채팅 리스트에서 하나의 방마다 공통된 class */
+.chat-content{
+	height: 80px;
+	background-color: #f7f7f9;
+	box-shadow: rgba(102, 051, 102, 0.1) 0px 9px 38px, rgba(95, 0, 128, 0.1) 0px 5px 12px;
+	border-radius: 10px;
+	margin: 10px;
+	padding: 3px;
+}
+
+/* 채팅 리스트에서 하나의 방마다 공통된 hover 이벤트 */
+.chat-content:hover{
+	height: 80px;
+	background-color: #f7f7f9;
+	border-radius: 10px;
+	margin: 10px;
+	padding: 3px;
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 9px 38px, rgba(95, 0, 128, 0.3) 0px 5px 12px;
+}
+
+/* 리스트 중 하나의 채팅 방 css */
+.chat-content.chat-content-onechat{
+	display: grid;
+	grid-template-columns: 1fr 3fr;
+}
+
+/* 하나의 채팅방의 대표이미지 */
+.chat-content.chat-content-onechat div:nth-child(1){
+}
+
+.chat-content.chat-content-onechat div:nth-child(1) img{
+	border-radius: 200px;
+	width: 100%;
+}
+
+/* 하나의 채팅방의 방 이름 */
+.chat-content.chat-content-onechat div:nth-child(2){
+	font-size: 20px;
+	overflow: hidden;
+}
+
+/* 모임대표 또는 프로필사진 이미지 */
+.chat-img-main{
+	height: 50px;
+	width: 50px;
+}
+
+#chat-room-content{
+	border-radius: 10px;
+}
+
+#chat-room{
+	overflow: auto;
+	height: 550px;
+	/* background-color: #EBEDF0; */
+	/* background-color: #f7f7f9; */
+	background-color: f7f7f9;
+	border-radius: 20px;
+	padding: 15px;
+}
+
+#chatLog{
+	/* margin: 10px; */
+}
+
+/* 소켓 서버로 전송할 입력텍스트 정보가 있는 div css */
+#input-chatLog{
+	border-radius: 10px;
+	width: 310px;
+	display: grid;
+	grid-template-columns: 4fr 1fr;
+	margin-left: 3px;
+}
+
+#input-chatLog div:nth-child(1){
+}
+
+#input-chatLog input{
+	width: 100%;
+	height: 100%;
+}
+
+#input-chatLog div:nth-child(2){
+}
+
+#input-chatLog button{
+	width: 90%;
+	height: 90%;
+	border-radius: 10px;
+	color: #5F0080;
+	border: solid #5F0080;
+	background-color: white;
+}
+/* 채팅 css */
+
+

@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  						
+<mapper namespace="ClubMapper">
+
+
+
+	<resultMap	id="clubSelectMap"	type="club">
+		<result property="clubNo"			column="club_no"				jdbcType="NUMERIC" />
+		<result property="user.userId"			column="user_id"				jdbcType="VARCHAR" />
+		<result property="clubTitle"		column="club_title"				jdbcType="VARCHAR" />
+		<result property="clubDetail"		column="club_detail"			jdbcType="VARCHAR" />
+		<result property="clubRegDate"		column="club_reg_date"			jdbcType="VARCHAR" />
+		<result property="currentMember"	column="current_member"			jdbcType="NUMERIC" />
+		<result property="clubMaxMember"	column="club_max_member"		jdbcType="NUMERIC" />
+		<result property="clubCategory"		column="club_category"			jdbcType="VARCHAR" />
+		<result property="clubArea"			column="club_area"				jdbcType="VARCHAR" />
+		<result property="clubImage"		column="club_image"				jdbcType="VARCHAR" />	
+		<result property="user.nickName"		column="nickname"				jdbcType="VARCHAR" />
+		<result property="user.profileImage"		column="profile_image"				jdbcType="VARCHAR" />
+		<result property="approvalCondition" column="approval_condition"		jdbcType="CHAR" />
+		<result property="roomId"			column="roomId"					jdbcType="VARCHAR"/>
+		<result property="deleteCondition"			column="delete_condition"					jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap	id="clubUserSelectMap"		type="clubUser">
+		<result property="clubUserNo"				column="club_user_no"						jdbcType="NUMERIC"/>
+		<result property="clubNo"					column="club_no"							jdbcType="NUMERIC" />
+		<result property="user.userId"					column="user_id"							jdbcType="VARCHAR" />
+		<result property="applicationRegDate"		column="application_reg_date"				jdbcType="DATE" />
+		<result property="joinRegDate"				column="join_reg_date"						jdbcType="DATE" />
+		<result property="logoutDate"				column="logout_date"						jdbcType="DATE" />
+		<result property="memberRole"				column="member_role"						jdbcType="CHAR" />
+		<result property="approvalCondition"		column="approval_condition"					jdbcType="CHAR" />
+		<result property="joinGreeting"				column="join_greeting"						jdbcType="VARCHAR" />
+		<result property="user.nickName"		column="nickname"						jdbcType="VARCHAR" />
+		<result property="user.profileImage"		column="profile_image"				jdbcType="VARCHAR" />
+		<result property="club.clubMaxMember"		column="club_max_member"				jdbcType="NUMERIC" />
+		<result property="roomId"					column="roomId"								jdbcType="VARCHAR"/>
+			
+	</resultMap>
+	
+	<resultMap	id="meetingSelectMap"		type="meeting">
+		<result property="meetingNo"				column="meeting_no"							jdbcType="NUMERIC"/>
+		<result property="clubNo"					column="club_no"							jdbcType="NUMERIC" />
+		<result property="user.userId"			column="add_meeting_user_id"				jdbcType="VARCHAR" />
+		<result property="meetingTitle"				column="meeting_title"						jdbcType="VARCHAR" />
+		<result property="meetingContent"			column="meeting_content"					jdbcType="VARCHAR" />
+		<result property="meetingDate"				column="meeting_date"						jdbcType="VARCHAR" />
+		<result property="meetingPlace"				column="meeting_place"						jdbcType="VARCHAR" />
+		<result property="meetingTime"				column="meeting_time"						jdbcType="VARCHAR" />
+		<result property="meetingWeather"			column="meeting_weather"					jdbcType="VARCHAR" />
+		<result property="meetingRegDate"			column="meeting_reg_date"					jdbcType="DATE" />
+		<result property="meetingMember"			column="meeting_member"						jdbcType="NUMERIC" />
+		<result property="meetingMaximumMember"		column="meeting_maximum_member"				jdbcType="NUMERIC" />
+		<result property="user.nickName"		column="nickname"				jdbcType="VARCHAR" />
+		<result property="user.profileImage"		column="profile_image"				jdbcType="VARCHAR" />
+			
+	</resultMap>
+	
+	<resultMap 	id="participantSelectMap" 	type="participant">
+		<result property="participantNo"				column="participant_no"							jdbcType="NUMERIC"/>
+		<result property="meetingNo"						column="meeting_no"								jdbcType="NUMERIC"/>
+		<result property="user.userId"			column="participant_user_id"					jdbcType="VARCHAR"/>
+		<result property="user.nickName"			column="nickname"					jdbcType="VARCHAR"/>
+		<result property="user.profileImage"			column="profile_image"					jdbcType="VARCHAR"/>
+		<result property="meeting.meetingTitle"			column="meeting_title"					jdbcType="VARCHAR"/>
+		<result property="meeting.meetingPlace"			column="meeting_place"					jdbcType="VARCHAR"/>
+		<result property="meeting.meetingTime"			column="meeting_time"					jdbcType="VARCHAR"/>
+		<result property="meeting.meetingDate"			column="meeting_date"					jdbcType="VARCHAR"/>
+		<result property="meeting.clubNo"			column="club_no"					jdbcType="NUMERIC"/>
+		
+	</resultMap>
+	
+	<!-- 모임 등록 -->
+	<insert id="addClub" parameterType="club">
+		INSERT
+		INTO club( 
+					club_no ,
+					user_id ,
+		  			club_title , 
+		  			club_detail ,
+		   			club_image , 
+		   			current_member , 
+		   			club_max_member , 
+		   			club_category , 
+		   			club_area ,
+		   			club_reg_date,
+		   			roomId,
+		   			delete_condition)
+		VALUES ( 
+					seq_club_no.NEXTVAL , 
+					#{user.userId} , 
+					#{clubTitle} , 
+					#{clubDetail} , 
+					#{clubImage} , 
+					#{currentMember:NUMERIC} , 
+					#{clubMaxMember:NUMERIC} , 
+					#{clubCategory} , 
+					#{clubArea} ,
+					SYSDATE,
+					#{roomId},
+					'0')
+	
+	</insert>
+
+	<!-- 모임 상세보기 -->
+	<select id="getClub" parameterType="int" resultMap="clubSelectMap">
+		SELECT
+			club_no ,
+			user_id ,
+			club_title ,
+			club_detail ,
+			club_image ,
+			current_member ,
+			club_max_member ,
+			club_category ,
+			club_area ,
+			roomId
+		FROM club
+		WHERE club_no = #{clubNo}	
+	
+	</select>
+	
+	<!-- 모임 수정 -->
+	<update id="updateClub" parameterType="club">
+		UPDATE club
+		<set>
+<!--  			user_id = #{user.userId} , -->
+			club_title = #{clubTitle} ,
+			club_detail = #{clubDetail} ,
+			club_category = #{clubCategory} ,
+			club_area = #{clubArea} ,
+			club_image = #{clubImage}
+		</set>
+		WHERE club_no = #{clubNo}
+	</update>
+	
+	<!-- 모임 삭제 -->
+	<delete id="deleteClub" parameterType="int">
+		UPDATE CLUB
+		SET DELETE_CONDITION = 1 
+		WHERE club_no = #{ clubNo }
+	</delete>
+	
+	 	<select  id="getClubList"  parameterType="search"	resultMap="clubSelectMap">
+	  	SELECT V3.*
+		FROM ( SELECT V2.*
+				FROM ( SELECT ROW_NUMBER() OVER( ORDER BY club_no DESC ) AS row_seq, V1.*
+	  					FROM		(	SELECT club_no , user_id , club_title , club_detail , club_reg_date, current_member, club_max_member, club_category, club_area, club_image
+											FROM club
+											WHERE delete_condition = 0
+											  <if test="searchCondition != null and searchCondition != '' ">
+													<choose>
+														<when test="searchKeyword !='' and clubCategory != '' and clubArea != '' ">
+															<!--  카테고리 and 지역 and 이름검색 -->
+															and club_title LIKE '%'||#{searchKeyword}||'%' and club_category = #{clubCategory} and club_area = #{clubArea}
+														</when>													
+														<when test="searchKeyword == null or searchKeyword =='' ">
+															<choose>
+																<when test="clubArea == '' ">
+																	<!-- 카테고리만 검색 -->
+																	and club_category = #{clubCategory}
+																</when>
+																<when test="clubCategory == '' ">
+																	<!-- 지역만 검색 -->
+																	and club_area = #{clubArea}	
+																</when>
+																<otherwise>
+																	<!-- 카테고리 and 지역 -->
+																	and club_category = #{clubCategory} and club_area = #{clubArea}
+																</otherwise>
+															</choose>
+														</when>																										
+														<when test="clubCategory == '' ">
+															<choose>
+																<when test="clubArea == '' ">
+																	<!-- 이름만 검색 -->
+																	and club_title LIKE '%'||#{searchKeyword}||'%'
+																</when>
+																<otherwise>
+																	<!-- 지역 and 이름검색 -->
+																	and club_area = #{clubArea} and club_title LIKE '%'||#{searchKeyword}||'%'
+																</otherwise>
+															</choose>															
+														</when>													
+														<otherwise>
+															<!-- 카ㅔ고리 and 이름검색 -->
+															and club_category = #{clubCategory} and club_title LIKE '%'||#{searchKeyword}||'%'
+														</otherwise>
+													</choose>														
+											 </if> 
+											ORDER BY club_no ) V1
+						 		) V2
+						 ) V3
+		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum}
+	 </select>
+	 
+	 <!-- <if test=" searchKeyword !='' ">  -->
+										 				 <!-- club_title LIKE('%${searchKeyword}%') and club_category = #{clubCategory} or club_area = #{clubArea} -->
+										 				 
+													 
+													<!--  <if test="searchCondition == 0 and searchKeyword !='' and category != '' and area != '' ">
+										 			 	and club_category LIKE ('%${category}%')
+													</if>
+													<if test="searchCondition == 0 and searchKeyword !='' and category != '' and area != '' ">
+										 			 	and club_area LIKE ('%${area}%')
+													</if>  -->
+
+	
+	 
+	 <!-- SQL : SELECT ROW Count -->	 
+	 <select  id="getTotalClubCount"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT club_no , club_title , club_detail
+						FROM club
+						<if test="searchCondition != null">
+							<where>
+								<if test="searchCondition == 0 and searchKeyword !='' ">
+						 			club_title = #{searchKeyword}
+								</if>
+								<if test="searchCondition == 1 and searchKeyword !='' ">
+						 			club_category = #{searchKeyword}
+								</if>
+							</where>
+						</if> ) countTable						
+	 </select>
+
+	 
+	<select id="getApprovalConditionList" parameterType="search" resultMap="clubSelectMap">
+	SELECT inner_table.*
+		FROM (
+			SELECT rownum AS row_seq, deep_table.*
+			FROM (
+				SELECT
+				c.club_no ,
+				c.club_title ,
+				c.club_detail ,
+				c.club_category ,
+				c.current_member ,
+				c.club_max_member ,
+				c.club_area ,
+				c.club_image ,
+				cU.approval_condition
+			
+				FROM club c, club_User cU
+
+				<where>
+					c.club_no = cU.club_no
+					<if test="searchKeyword != null and order == 0">
+						and cU.user_id = #{searchKeyword}
+					</if>
+					<if test="searchKeyword != null and order == 1">
+						and cU.user_id = #{userId}
+					</if>
+				</where>
+				
+				) deep_table
+			) inner_table
+			<!-- WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum} -->
+
+	</select>
+	
+	<select  id="getTotalApprovalConditionCount"  parameterType="search"	 resultType="int">
+	  	SELECT count(*)
+	  	FROM ( SELECT user_id
+				FROM club_user		
+			<where>
+				user_id = #{searchKeyword}
+			</where>			
+			) countTable		
+	 </select>
+	
+	<!-- 로그인한 회원이 가장 최근 만든 모임번호 가져온다 -->
+	<select id="getClubNo" parameterType="user" resultType="int">
+		SELECT CLUB_NO
+		FROM ( SELECT club_no FROM CLUB WHERE USER_ID = #{ userId } order by club_reg_date DESC )
+		WHERE ROWNUM = 1	
+	</select>
+	
+	<!-- 로그인한 회원이 가장 최근 만든 미팅번호 가져온다 -->
+	<select id="getMeetingNo" parameterType="participant" resultMap="meetingSelectMap">
+		SELECT *
+		FROM ( SELECT * FROM meeting WHERE add_meeting_user_id = #{ user.userId } order by meeting_no DESC )
+		WHERE ROWNUM = 1	
+	</select>
+	
+
+	<insert id="addApprovalCondition" parameterType="clubUser">
+		INSERT INTO club_user (
+			club_user_no ,
+			user_id , 
+			club_no ,
+			application_reg_date ,
+			join_reg_date ,
+			member_role ,
+			approval_condition ,
+			join_greeting ,
+			roomId
+		)		 		 
+		VALUES (
+			seq_club_user_no.nextval ,
+			#{user.userId} ,
+			#{clubNo} ,
+			SYSDATE ,
+			SYSDATE ,
+			#{memberRole} ,
+			#{approvalCondition} ,
+			#{joinGreeting} ,
+			#{roomId}
+		)
+		
+	</insert>
+	
+	<!-- 가입승인 or 승인거절 -->
+	<update id="updateApprovalCondition" parameterType="clubUser">
+		UPDATE club_user
+		<set>
+			approval_condition = #{approvalCondition}		
+		</set>
+		WHERE club_user_no = #{clubUserNo}
+	</update>
+	
+	<!-- 모임원 직책 수정 -->
+	<update id="updateMemberRole" parameterType="clubUser">
+		UPDATE club_user
+		<set>
+			member_role = #{memberRole}
+		</set>
+		WHERE club_user_no =#{clubUserNo}
+	</update>
+	
+	<!-- 모임원 추방 -->
+	<delete id="deleteClubMember">
+		DELETE FROM club_user WHERE club_user_no = #{clubUserNo}
+	</delete>
+	
+	<!-- 가입신청현황 삭제 -->
+	<delete id="deleteApprovalCondition">
+		DELETE FROM club_user WHERE club_no = #{clubNo} and user_id = #{user.userId}
+	</delete>
+	
+	
+	<!-- 모임게시물 등록할 때 해당 모임의 모임원들에게 게시물 등록되었다고 알림. 해당 모임의 모임원들 찾는 Query -->
+	<select id="getClubMemberListToClubPost" parameterType="clubPost" resultMap="clubUserSelectMap">
+		SELECT club_user_no , user_id , club_no , application_reg_date , join_reg_date, logout_date, member_role, approval_condition, join_greeting
+		FROM club_user
+		WHERE CLUB_NO = ${ clubNo } AND JOIN_REG_DATE IS NOT NULL
+		ORDER BY club_user_no ASC
+	 </select>
+	 
+	 <!-- 로그인한 회원이 속해있는 모임의 채팅방 번호를 찾는 Query -->
+	<select id="getRoomIdList" parameterType="user" resultMap="clubSelectMap">
+		SELECT CU.ROOMID, C.CLUB_TITLE, C.CLUB_IMAGE
+		FROM CLUB_USER CU, CLUB C
+		WHERE CU.CLUB_NO = C.CLUB_NO (+) AND CU.USER_ID = #{ userId } AND CU.APPROVAL_CONDITION = 1 AND CU.JOIN_REG_DATE IS NOT NULL
+	</select>
+	
+	<select  id="getClubMemberList"  parameterType="search"	resultMap="clubUserSelectMap">
+			
+			SELECT inner_table.*
+				FROM ( SELECT rownum AS row_seq, deep_table.*
+						FROM ( SELECT cU.club_user_no, cU.user_id, u.nickName, cU.member_role, u.logout_date, cU.join_reg_date, cU.approval_condition, u.profile_image, c.club_max_member
+								FROM
+								users u, club_User cU, club c
+								 
+								<where>
+									cU.user_id = u.user_id
+									and cU.club_no = c.club_no
+									<if test="searchKeyword != null">
+										and cU.club_no = #{searchKeyword}
+									</if>
+								</where>
+								ORDER BY cU.member_role DESC, cU.approval_condition DESC, cU.join_reg_date
+								) deep_table
+							) inner_table
+		
+	 </select>
+	
+ 	<select  id="getTotalClubMemberCount"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT club_no 
+						FROM club_user
+							<where>
+						 			club_no = #{ searchKeyword }
+						 			and approval_condition = '1'								
+							</where> ) countTable						
+	 </select>
+	
+	
+	
+	<!-- 모임일정 등록 -->
+	<insert id="addMeeting"	parameterType="meeting">
+		INSERT
+		INTO meeting (
+			meeting_no ,
+			club_no ,
+			add_meeting_user_id ,
+			meeting_title ,
+			meeting_content ,
+			meeting_date ,
+			meeting_place ,
+			meeting_time ,
+			meeting_weather ,
+			meeting_reg_date ,
+			meeting_member ,
+			meeting_maximum_Member
+			)
+		VALUES (
+			seq_meeting_no.NEXTVAL ,
+			#{clubNo} ,
+			#{user.userId} ,
+			#{meetingTitle} ,
+			#{meetingContent} ,
+			#{meetingDate} ,
+			#{meetingPlace} ,
+			#{meetingTime} ,
+			#{meetingWeather} ,
+			SYSDATE ,
+			#{meetingMember} ,
+			#{meetingMaximumMember})
+	</insert>
+	
+	<!-- 모임일정 상세보기 -->
+	<select id="getMeeting" parameterType="int" resultMap="meetingSelectMap">
+		SELECT
+			meeting_no ,
+			club_no ,
+			add_meeting_user_id ,
+			meeting_title ,
+			meeting_content ,
+			meeting_date ,
+			meeting_place ,
+			meeting_time ,
+			meeting_weather ,
+			meeting_member ,
+			meeting_maximum_member
+		FROM meeting
+		WHERE meeting_no = #{meetingNo}
+	</select>
+	
+	<!-- 모임일정 수정 -->
+	<update id="updateMeeting" parameterType="meeting">
+		UPDATE meeting
+		<set>
+			meeting_title = #{meetingTitle} ,
+			meeting_content = #{meetingContent} ,
+			meeting_date = #{meetingDate} ,
+			meeting_place = #{meetingPlace} ,
+			meeting_time = #{meetingTime} ,
+			meeting_maximum_member = #{meetingMaximumMember}
+		</set>
+		WHERE meeting_no = #{meetingNo}
+	</update>
+	
+		<select  id="getMeetingList"  parameterType="search"	resultMap="meetingSelectMap">
+	 	SELECT inner_table.*
+		FROM (
+			SELECT rownum AS row_seq, deep_table.*
+			FROM (
+				SELECT
+					m.meeting_no ,
+					m.club_no ,
+					m.meeting_title ,
+					m.meeting_date ,
+					m.meeting_time ,
+					m.meeting_place , 
+					m.meeting_weather ,
+					m.meeting_member ,
+					u.user_id
+			
+					FROM meeting m, users u
+
+					<where>
+					m.add_meeting_user_id = u.user_id
+					and m.club_no = #{searchKeyword}					
+					</where>					
+				 ORDER BY m.meeting_date
+			) deep_table
+		) inner_table
+	 	
+	 
+	 </select>
+	
+	
+	<select  id="getTotalMeetingCount"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT meeting_no 
+						FROM meeting
+						<if test="searchCondition != null">
+							<where>
+								<if test="searchCondition == 0 and searchKeyword !='' ">
+						 			club_no = #{searchKeyword}
+								</if>								
+							</where>
+						</if> ) countTable						
+	 </select>
+	
+	
+	
+	
+	
+	<!-- 모임일정 삭제 -->
+	<delete id="deleteMeeting">
+		DELETE FROM meeting
+		WHERE meeting_no = #{meetingNo}
+	</delete>
+	
+	<!-- 모임일정 참여신청 수정해야함-->
+	<insert id="addMeetingMember" parameterType="participant">
+		INSERT into participant		(
+			participant_no ,
+			meeting_no ,
+			participant_user_id		
+			)		
+		VALUES (
+			seq_participant_no.nextval ,
+			#{meetingNo} ,
+			#{user.userId}
+		)
+	</insert>
+	
+	<!-- 모임일정 참여신청 취소 -->
+	<delete id="deleteMeetingMember" parameterType= "participant">
+		DELETE
+		FROM participant
+		WHERE meeting_no = #{meetingNo} AND participant_user_id = #{user.userId}
+	</delete>
+	
+	<!-- 모임일정 참여인원 리스트 -->
+	<select id="getMeetingMemberList" parameterType="search" resultMap="participantSelectMap">
+		SELECT inner_table.*
+		FROM ( 
+				SELECT rownum AS row_seq, deep_table.*
+				FROM (
+						 SELECT
+						  p.participant_no, 
+						  p.participant_user_id, 
+						  u.nickname ,
+						  u.profile_image ,
+						  m.meeting_title ,
+						  m.meeting_place , 
+						  m.meeting_time ,
+						  m.meeting_date ,
+						  m.club_no ,
+						  m.meeting_no
+						  
+						  
+						FROM participant p, users u, meeting m
+						
+						<where>
+							p.participant_user_id = u.user_id
+							and p.meeting_no = m.meeting_no
+<!-- 							and m.club_no = c.club_no -->
+							
+							<if test="order == 0 and searchKeyword != '' ">
+								and p.meeting_no = #{searchKeyword}
+							</if>
+							
+							<if test="order == 1 and searchKeyword != '' ">
+								and u.user_id = #{searchKeyword}
+							</if>
+						</where>		
+						) deep_table ) inner_table
+
+	</select>
+	
+	<select  id="getTotalMeetingMemberCount"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT participant_no 
+						FROM participant
+						<where> 
+							<if test="order == 0 and searchKeyword != '' ">
+								meeting_no = #{searchKeyword}
+							</if>
+							
+							<if test="order == 1 and searchKeyword != '' ">
+								participant_user_id = #{searchKeyword}
+							</if>
+						</where>
+			) countTable						
+	 </select>
+	 
+	 <!-- 결제입니다 -->
+	 
+	<update id="updateClubMember" parameterType="pay">
+      UPDATE club
+      <set>
+         club_max_member = club_max_member + #{ updateClubMemberCount }
+      </set>
+      <where>
+      	club_no = #{ clubNo }
+      </where>
+   </update>
+   
+   
+   <!-- 참가신청 했을 때 해당 일정에 신청 했는지 안했는지 확인하는 Query -->
+   <select id="getCheckMeeting" parameterType="participant" resultType="int">
+   		SELECT COUNT(*) FROM PARTICIPANT WHERE MEETING_NO = #{ meetingNo } AND PARTICIPANT_USER_ID = #{ user.userId }
+   </select>
+   
+   <!-- 마이홈피에서 접근시 session에 clubNo가 없어서 미팅번호로 모임번호 가져온다 -->
+   <select id="getClubNotoMyHome" parameterType="int" resultType="int">
+   		SELECT CLUB_NO FROM MEETING WHERE MEETING_NO = #{ meeting_no }
+   </select>
+   
+   <!-- 모임 삭제하기 위해서 해당 모임의 모임원을 모두 삭제한다 -->
+	<delete id="deleteClubMemberList" parameterType="int">
+		delete from club_user where club_no = #{ clubNo }
+	</delete>
+	
+	<!-- 모임 상세보기에서 게시물 클릭시 해당 모임의 모임원인지 확인하는  -->
+	<select id="getClubMemberListCheck" parameterType="club" resultType="string">
+		select user_id from club_user where user_id = #{ user.userId } and club_no = #{ clubNo }
+	</select>
+</mapper>

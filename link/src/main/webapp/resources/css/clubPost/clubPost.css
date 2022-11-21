@@ -1,0 +1,394 @@
+
+/* SIMPLE PROFILE 심플 프로필 */
+
+	.ui-dialog-titlebar{
+		border: hidden;
+		background-color: white;
+		display:none;
+	}
+	.ui-dialog-titlebar-close{
+		border: hidden;
+		background-color: white;
+		display:none;
+	}
+
+	div.ui-widget {
+		width: 180px !important;
+	}
+
+	.ui-widget.ui-widget-content{
+		width:auto !important; 
+		border-radius: 20px;   
+	}
+
+	.btnSimpleProfileIng{
+	   background-color: #5F0080;
+	   box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px !important;
+	   color: white;
+	}
+
+	.btnSimpleProfileIng:hover{
+	   background-color: white !important;
+	   box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	   color:blueviolet !important;
+	}
+
+	.btnSimpleProfile{
+
+	   background-color: white;
+	   box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	   color:blueviolet;
+	}
+	.btnSimpleProfile:hover{
+	   background-color: #5F0080 !important;
+	   box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px !important;
+	   color: white !important;
+	}
+
+	.dl {
+		cursor: pointer;
+	}
+
+/* SIMPLE PROFILE 심플 프로필 */
+
+
+
+
+/* 수정 모달창 이게 없으면 화면 맨위에 붙어있다 툴바에 가려진다 */
+#club-post-add-modal{
+	margin-top: 50px;
+}
+
+#club-post-update-modal{
+	margin-top: 50px;
+}
+
+.row-content.buffer.clear-after{
+	padding-top: 0;
+	padding-left: 0;
+	margin-left: 405px;
+	margin-right: 360px;
+}
+.row-content.buffer.clear-after > div:first-child{
+	width: 1140px;
+	height: 550px;
+	overflow: hidden;
+}
+.row-content.buffer.clear-after > div:first-child > img{
+	width: 100%;
+}
+.homeBtn_group{
+	/* background-color: red; */
+	height: 100px;
+	width: 1140px;
+}
+.grid-items.preload{
+	width: 1140px;
+}
+
+/* 상단 모임 툴바? */
+.inline.cats.filter-options{
+	font-size: 40px;
+}
+			
+/* 리스트와 상세보기와 댓글과 대댓글의 프로필 사진 */
+.profileImage{
+	border-radius: 50px;
+	height: 100px;
+	width: 100px;
+}
+
+/* 전제 글씨체 */
+.row{
+	/* font-family: 'Single Day', cursive; */
+}
+		
+/* 댓글전체를 감싸는 태그 */
+.comment{
+	font-size: 20px;
+}
+
+.recomment{
+	font-size: 20px;
+}
+
+/* 하나의 댓글 전체를 감싸는 태그 */
+#comment-body{
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 10px;
+	margin: 10px;
+	padding: 1rem;
+	background: white;
+}
+
+/* 게시물등록, 댓글등록, 등록완료, 수정완료, 취소의 버튼 */
+.plain.button.red{
+	background-color: #5F0080;
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 10px;
+	margin: 1rem;
+	padding: 10px;
+	width: 90px !important;
+	color: white !important;
+	font-size: 16px !important;
+	text-align: center;
+	border: 2px solid;
+}
+
+/* 댓글등록, 등록완료, 수정완료, 취소의 버튼 마우스 오버 */
+.plain.button.red:hover{
+	background-color: white;
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 10px;
+	margin: 1rem;
+	padding: 10px;
+	width: 90px !important;
+	color: #5F0080 !important;
+	font-size: 16px !important;
+}
+
+/* 취소 이전으로 버튼 */
+.plain.button.red.cancle{
+	background-color: white;
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 10px;
+	margin: 1rem;
+	padding: 10px;
+	width: 90px !important;
+	color: #5F0080 !important;
+	font-size: 16px !important;
+	text-align: center;
+	border: solid 2px;
+}
+
+.plain.button.red.cancle:hover{
+	background-color: #5F0080;
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 10px;
+	margin: 1rem;
+	padding: 10px;
+	width: 90px !important;
+	color: white !important;
+	font-size: 16px !important;
+}
+
+/* summernote 수정완료 */
+#summernoteUpdate{
+	background-color: #5F0080;
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 10px;
+	margin: 1rem;
+	padding: 10px;
+	width: 90px !important;
+	color: white !important;
+	font-size: 16px !important;
+	text-align: center;
+	border: 2px solid;
+}
+
+#summernoteUpdate:hover{
+	background-color: white;
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 10px;
+	margin: 1rem;
+	padding: 10px;
+	width: 90px !important;
+	color: #5F0080 !important;
+	font-size: 16px !important;
+}
+
+/* summernote 이전으로 */
+#summernoteCancle{
+	background-color: white;
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 10px;
+	margin: 1rem;
+	padding: 10px;
+	width: 90px !important;
+	color: #5F0080 !important;
+	font-size: 16px !important;
+	text-align: center;
+	border: solid 2px;
+}
+
+#summernoteCancle:hover{
+	background-color: #5F0080;
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 10px;
+	margin: 1rem;
+	padding: 10px;
+	width: 90px !important;
+	color: white !important;
+	font-size: 16px !important;
+}
+
+.glyphicon{
+	color: black !important;
+}
+
+.glyphicon:hover{
+	color: #5F0080 !important;
+}
+
+.club-post-time{
+	font-size: 20px;
+}
+
+#replyadd{
+	width: 125px !important;
+}
+
+/* 댓글의 댓글개수 마우스 오버 */
+.recommentList:hover{
+	color: #5F0080 !important;
+	font-size: 15px;
+}
+
+/* summernote textarea */
+.plain.buffer{
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 10px;
+	margin: 1rem;
+	width: 920px;
+}
+
+/* 모임 게시물 상세보기 전체 감싸는 태그 */
+.post-area.clear-after{
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 10px;
+	margin: 1rem;
+	padding: 30px;
+}
+
+/* 게시물의 댓글 개수 */
+#comments{
+	padding: 30px;
+	color: #5F0080 !important;
+}
+
+/* 게시물 상단 프로필사진, 좋아요 이미지, 좋아요 개수, 등록, 수정, 삭제, 신고 수평 정렬하기 위해 부모태그에 설정 */
+.clubPost-header {
+	display: grid;
+	grid-template-columns: 2fr 1fr 4fr 1fr 1fr 1fr 1fr 1fr;
+	font-size: 3rem;
+}
+
+.club-post-time{
+	font-size: 20px !important;
+}
+
+/* 상세보기에서 닉네임 글씨 크기 */
+.clubPost-header-nickName{
+	font-size: 2rem;
+}
+
+/* 상세보기에서 제목 글씨 크기 */
+.clubPost-body-title{
+	font-size: 4rem;
+}
+
+
+/* 대댓글 리스트 전체를 감싸는 태그 */
+.recomment-header{
+	display: none;
+	display: grid;
+	grid-template-columns: 2fr 10fr;
+	background: white;
+}
+
+.recomment-header.depth{
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 10px;
+	margin: 1rem;
+	padding: 30px;
+}
+			
+/* 댓글과 대댓글의 하트이미지 div태그 좋아요수 등록 수정 삭제 신고 아이콘 div태그 수평정렬 */
+.comment.body{
+	display: grid;
+	grid-template-columns: 1fr 13fr;
+}
+
+
+
+
+/* 게시물 리스트에서 하나의 리스트만 */
+.col-md-12{
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 30px;
+	margin-top: 50px;
+	padding-left: 50px;
+	padding-top: 50px;
+}
+
+
+
+
+/* 전체건수 페이지 정렬 4가지의 글씨 크기 */
+.contains-order {
+	font-size: 15px;
+}
+
+.club-post-search{
+	box-shadow: rgba(102, 051, 102, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 2px;
+	padding: 1rem;
+	background-color: white;
+	color: #5F0080;
+	font-size: 25px;
+	border-color: #5F0080;
+}
+.contains-order{
+	font-size: 30px;
+}
+.page{
+	color: #5F0080;
+	font-size: 40px;
+}
+
+
+
+
+
+
+
+
+/* 모달 */
+
+
+
+.modal{ 
+	position: fixed; width:100%; height:100%; background: rgba(0,0,0,0.2); top: 40px; left:0; display:none;
+}
+
+.modal_content{
+	width:400px; height:200px;
+	background:#fff; border-radius:10px;
+	position:relative; top:50%; left:50%;
+	margin-top:-100px; margin-left:-200px;
+	text-align:center;
+	box-sizing:border-box; padding:74px 0;
+	line-height:23px; cursor:pointer;
+}
+
+.club-post-add-view{
+	box-shadow: rgba(95, 0, 128, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 30px;
+	padding: 3rem;
+	/* background-color: #f2f3ff; */
+}
+
+.club-post-update-view{
+	box-shadow: rgba(95, 0, 128, 0.3) 0px 19px 38px, rgba(95, 0, 128, 0.22) 0px 15px 12px;
+	border-radius: 30px;
+	padding: 3rem;
+	/* background-color: #f2f3ff; */
+}
+
+
+
+/* 모달 */
+
+
+
+
